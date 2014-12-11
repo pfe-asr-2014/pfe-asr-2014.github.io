@@ -459,11 +459,14 @@ header h1 {
   letter-spacing: -1px;
   font-size: 72px;
   font-weight: normal;
-  color: #fff;
   line-height: 1;
   margin-top: 0;
   margin-bottom: 0.2em;
   width: 540px;
+}
+
+header h1 a, header h1 a:hover {
+  color: #fff;
 }
 
 header h2 {
