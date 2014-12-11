@@ -1,2 +1,7 @@
-name: Architect Theme
+name: TSP MOOC Platform
+description: A docker based platform dedicated to improve the learning experience of TSP MOOC
+
 markdown: redcarpet
+
+gems:
+  - jekyll-mentions
