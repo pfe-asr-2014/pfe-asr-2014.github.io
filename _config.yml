@@ -5,3 +5,4 @@ markdown: redcarpet
 
 gems:
   - jekyll-mentions
+  - jekyll-redirect-from
