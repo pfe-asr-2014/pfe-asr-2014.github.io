@@ -2,7 +2,7 @@
 
 A docker based platform dedicated to improve the learning experience of TSP MOOC
 
-# How to use it?
+# How to use this website?
 
 Clone this repository
 
@@ -22,4 +22,4 @@ Use it!
 $ jekyll serve
 ```
 
-For more details read about [Jekyll][http://jekyllrb.com] on its web page.
+For more details read about [Jekyll](http://jekyllrb.com) on its web page.
