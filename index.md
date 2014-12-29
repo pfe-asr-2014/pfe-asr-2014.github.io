@@ -1,13 +1,18 @@
 ---
 layout: default
-title: Architect Theme by Jason Long
+title: TSP MOOC Platform
 ---
 
-<div id="home">
-  <h1>Blog Posts</h1>
-  <ul class="posts">
-    {% for post in site.posts %}
-      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-  </ul>
-</div>
+# Welcome to the Télécom SudParis MOOC Platform.
+
+_**TODO** Short summary of the project_
+
+# Usage
+
+_**TODO**_ How to use the platform as a user (in the documentation, how to create
+  new services/images).
+
+# Contact
+Having trouble with the platform? [Check out the documentation](/docs) or
+[open an issue](https://github.com/pfe-asr-2014/pfe-asr-2014.github.io/issues)
+and we’ll help you sort it out.
