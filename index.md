@@ -4,6 +4,8 @@ title: TSP MOOC Platform
 ---
 
 # Welcome to the Télécom SudParis MOOC Platform.
+_This article is a work in progress. Please open an issue if you have a remark or
+suggestion._
 
 _**TODO** Short summary of the project_
 
