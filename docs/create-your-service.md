@@ -134,3 +134,49 @@ the alias `mysql`. This alias is used by docker to create two principals things:
 That's all, you now know how to make containers communicate between them !
 
 ## Introduce services
+
+_This part is greatly linked to the [TSP MOOC Overview](https://github.com/pfe-asr-2014/tsp-mooc-overview)
+software. If you don't use it, this section will not interest you._
+
+This section is here to describe how you can add a service to [TSP MOOC Overview](https://github.com/pfe-asr-2014/tsp-mooc-overview).
+This software let the student choose what courses to install or run. It also remove
+all courses manual installation. To do that, we have to publish publicly the
+images of these courses and have a way to specify to the software how these image
+must be run (with a volume ? some environment variable ?). All of this is done
+via the [`config.yml`](https://github.com/pfe-asr-2014/tsp-mooc-overview/blob/master/config.yml)
+file. This section is all about how to add (or remove) a service from this file.
+
+Here is a complete example of a config.yml file:
+
+```yaml
+services:
+  - id: tsp-mooc-db
+    completeName: Relational Database
+    stack:
+      - containerName: tsp-moocdb-postgres
+        image: tsp-moocdb-postgres:latest
+      - containerName: tsp-moocdb-web
+        image: tsp-moocdb-web
+  - id: django-example
+    completeName: Django overview
+    stack:
+      - containerName: db
+        image: paintedfox/postgresql
+        environment:
+          USER: docker
+          PASS: docker
+          DB: docker
+      - containerName: djangodocker_web
+        image: djangodocker_web
+        links:
+          - db
+        ports:
+          - "8000:8080"
+        volumes:
+          - .:/app
+```
+
+This file define many services. Each service is composed of an id and a name
+(`completeName`, it's what is displayed to the user in the GUI). Then each
+service must defined a `stack`. A stack is a representation of the state of the
+required docker container. The syntax is based on the [fig](http://www.fig.sh) tool.
