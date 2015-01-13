@@ -68,4 +68,69 @@ And voilà ! You now have a docker image ready to be distributed to your student
 
 ## Separate your container by process (and link them instead)
 
+Docker is designed to run a single process per container, that's why the container
+stop when the process of the `CMD` instruction die. So how can we have a system
+with multi process ? There is many possibility: you can use a [process manager](http://ddollar.github.io/foreman/),
+use a bash script with the `&` symbol (as long as the last process isn't killed)
+or you can stick to the docker philosophy: one process per container. In that
+case we need a way to make our container communicate between them. Docker provide
+us a way to link our container together with a functionnality called… link !
+
+To demonstrate the concept of link we will take the example of a database (MySQL)
+and a managing tool for that database (phpMyAdmin). Luckily for us, there already
+are images of these software.
+
+_Again, this is a basic introduction to link. For a more advanced version,
+[see the official one](https://docs.docker.com/userguide/dockerlinks/)._
+
+```sh
+# Download the base images
+docker pull mysql
+docker pull corbinu/docker-phpmyadmin
+
+# Run the MySQL server
+docker run -d \
+  –name mysqlcontainer \
+  -e MYSQL_ROOT_PASSWORD=password \
+  –expose 3306 \
+  -v /var/lib/mysql \
+  mysql
+```
+
+So with these commands we have downloaded phpmyadmin and mysql, and there are
+ready to use ! The third command is the one to run a MySQL database with the root
+password set to `password`, the name `mysqlcontainer`, we expose the port 3306 to allow
+connection to the database and the argument `-v` tell docker to store the content
+of the specified directory on the host machine (it will not be deleted with the
+container).
+Note that the name of this container is mandatory. We need it to be able to refer
+to it from our other container.
+
+Now, we are going to run the phpmyadmin container:
+
+```sh
+# Run the
+docker run -d \
+  –name phpmyadmin \
+  –link mysqlcontainer:mysql \
+  -e MYSQL_USERNAME=root \
+  -e MYSQL_PASSWORD=password \
+  -p 80 \
+  corbinu/docker-phpmyadmin
+```
+
+So what have we done with this command ? We are running the container in the
+background (`-d`), with the name of phpmyadmin (`-name phpmyadmin`), pass to the
+container two environment variable: `MYSQL_USERNAME` and `MYSQL_PASSWORD`, expose
+the port 80 to the host and all of that with the image `corbinu/docker-phpmyadmin`.
+And we have linked the container `mysqlcontainer` to our phpmyadmin container with
+the alias `mysql`. This alias is used by docker to create two principals things:
+
+* an entry in the `/etc/hosts` file. It means that from the container, we can now
+  use the `mysql` uri to link to our mysql container (eg. you can `ping mysql`).
+* a bunch of environment variable that can help you to programmaticaly connect to
+  the linked container (see [the docker docs](https://docs.docker.com/userguide/dockerlinks/#environment-variables)).
+
+That's all, you now know how to make containers communicate between them !
+
 ## Introduce services
