@@ -188,6 +188,35 @@ completement indépendante les uns des autres. La figure~\ref{architecture} repr
    \includegraphics[width=\textwidth, keepaspectratio=true]{architecture.png}
 \end{figure}
 
+Cette architecture se décompose en deux parties principales: la première est gérer par l'école et peut se déployer sur des serveurs dédiés ou sur un cloud; la deuxième partie est basé sur docker et peut donc être déployé dans n'importe quel environnement docker (c'est d'ailleurs une des grandes force de docker), dans notre cas il s'agit couramment de l'ordinateur de l'apprenant mais on peut envisager la possibilité d'héberger ces conteneurs sur un cloud gérer par l'école et directement proposer les accés aux apprenants.
+
+La communication entre les groupes est assuré via l'utilisation du protocole MQ Telemetry Transport (MQTT). Il s'agit d'un protocole de communication prévu pour ne pas consommer beaucoup de ressources (il est par exemple utilisé dans l'embarqué, l'internet des objets mais aussi la communication avec des satellites) et qui est résilient. Il offre un minimum de fonctionnalité (publish/subscribe) ce qui nous suffit, nous l'avons choisi car il permet d'avoir une faible emprunte sur des machines de faible puissance que certains des apprenants peuvent utiliser.
+
+\subsection{Serveur}
+
+Le serveur fonctionne avec trois briques logiciels différents:
+
+\begin{itemize}
+  \item Un plugin moodle qui permet l'enregistrement des traces des apprenants dans le système moodle afin de permettre aux professeurs de créer des rapports.
+  \item Une passerelle entre le serveur MQTT et moodle qui transforme les données obtenu via MQTT dans un format reconnu par moodle.
+  \item Un serveur (broker) MQTT sur lequel les brokers distant vont se connecter pour transmettre les traces qu'ils auront genérer.
+\end{itemize}
+
+Ces trois briques logiciels peuvent être déployer sur différents serveurs si l'on a besoin de répartir la charge. Nous recommandons dans ce cas de grouper la passerelle et le broker MQTT sur une même machine qu'il suffit de multiplier pour passer à l'échelle.
+
+\subsection{Apprenant}
+
+Le coté apprenant est composé de deux conteneurs essentiels si déployer sur un cloud:
+
+\begin{itemize}
+  \item Le broker MQTT qui permet de transmettre les traces des apprenants au serveur distant.
+  \item Et l'agent qui collecte les traces des apprenants émis par les conteneurs de cours, les mets en forme et les retransmets au broker MQTT.
+\end{itemize}
+
+Si l'environnement est disponible sur la machine de l'apprenant alors le conteneur Overview permet de fournir une interface graphique qui permet gérer les conteneurs d'apprentissages de manières extremement simple.
+
+Enfin des conteneurs d'apprentissages composent les environnement des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter, de façon anonyme ou non, des informations sur leurs utilisation, l'avancement de l'apprenant voir des résultats d'examen.
+
 \section{Agent}
 
 \section{Moodle}
@@ -195,10 +224,6 @@ completement indépendante les uns des autres. La figure~\ref{architecture} repr
 \section{tracker.js}
 
 \section{Overview}
-
-\subsection{}
-
-\subsection{}
 
 \pagestyle{fancy}
 
