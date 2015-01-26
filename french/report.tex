@@ -264,7 +264,7 @@ C'est donc ce que nous avons fait. Le plugin développer est très simple dans s
 
 Comme visible dans la figure~\ref{seq-submit-event}, le procédé se fait en deux requêtes HTTP. La première est faite de la manière suivante:
 
-\begin{lstlisting}[caption={1. Requête d'un token}]
+\begin{lstlisting}[caption={Requête d'un token}]
 GET http://localhost:8080/login/token.php?
   service=mem&
   username=&
@@ -274,13 +274,13 @@ GET http://localhost:8080/login/token.php?
 Il faut que les champs «username» et «password» soit complété avec le nom d'utilisateur et le mot de passe du compte moodle de l'apprenant.
 Moodle renvoie alors le token avec la réponse au format json suivante:
 
-\begin{lstlisting}[language=json, caption={2. Retourne le token}]
+\begin{lstlisting}[language=json, caption={Retourne le token}]
 {"token":"le token de l'utilisateur"}
 \end{lstlisting}
 
 Maintenant que nous avons la possibilité de prouver que nous sommes bien un utilisateur nous pouvons envoyer un évènement à moodle via la requête HTTP suivante:
 
-\begin{lstlisting}[caption={3. Soumet un évènement}]
+\begin{lstlisting}[caption={Soumet un évènement}]
 POST http://localhost:8080/webservice/rest/server.php?
     wsfunction=local_mem_post_event&
     wstoken=<token de l'utilisateur>&
