@@ -54,6 +54,14 @@
       {[}{{{\color{delim}{[}}}}{1}
       {]}{{{\color{delim}{]}}}}{1},
 }
+\lstdefinelanguage{javascript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true
+}
 
 \usepackage{lastpage}
 \usepackage{fancyhdr}
@@ -295,6 +303,23 @@ Les quatres dernier champs sont les plus importants: la catégorie, l'action, le
 Le format de description est suffisament générique pour qu'il puisse décrire un évènement métier (début d'un cours) ou un évènement technique (soumission d'une requête SQL) tout en gardant un format unique dans les différents cas. Si le format d'évènement choisi avait été moins générique, il aurait falu en maintenir plusieurs suivant le type d'information à transmettre ce qui aurait augmenter la complexité du système sans gain significatif.
 
 \section{tracker.js}
+
+L'interet de la nouvelle plateforme de MOOC c'est d'etre capable de fournir aux enseignants des retours sur ce qu'on fait les apprenants. Ainsi des questions comme «Est-ce que le TP a la bonne difficulté ?» ou «Pourquoi est-ce que la majorité des apprenants se trompent à la question 5?» peuvent trouver une réponse dans le comportement des apprenants (par exemple, la majorité des réponses sont les mêmes, la question posée est-peut être mal formulé). Aussi faut-il connaitre les actions des apprenants lorqu'ils réalisent le TP.
+C'est pour répondre à cette problèmatique qu'est née tracker.js.
+
+Tracker.js est une simple bibliothèque javascript à intégré dans une page web et qui permet de déclarer un certain nombre d'évènement à surveiller.
+De maniere pratique cela permet d'enregistrer les cliques de souris, les frappes clavier ou un évènement personalisé et d'envoyer les informations à l'agent pour qu'il relais les informations à moodle.
+
+Le tracker à été écrit de manière à promouvoir une API simple et concise, ainsi on obtient une déclaration simple et trés lisible des évènements:
+
+\begin{lstlisting}[language=javascript, caption={Exemple d'utilisation de tracker.js}]
+// Instanciation du tracker
+var tracker = new Tracker({distant: 'url'});
+
+// On ecoute les evenements "onclick" sur les elements de classe "my-element"
+tracker.on('.my-element').track('click');
+\end{lstlisting}
+
 
 \section{Overview}
 
