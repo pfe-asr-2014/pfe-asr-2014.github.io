@@ -7,6 +7,7 @@
 \usepackage{biblatex}
 \usepackage{xcolor}
 \usepackage[scale=0.8]{geometry}
+\usepackage{graphicx}
 
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily,
@@ -21,7 +22,7 @@
   framerule=2pt
 }
 
-\title{Notre beau titre}
+\title{Platforme de MOOC TSP basée sur Docker}
 \author{François Monniot \& Alexis Mousset}
 
 % PDF metadata
@@ -46,29 +47,46 @@
 
 \section{MOOC}
 
-\subsection{Contexte des MOOC à TSP et en général}
+\subsection{Contexte des MOOC en général}
+
+\subsection{Contexte des MOOC à TSP}
 
 \subsection{Contexte des besoins de TP}
 
 \section{Docker}
 
-\subsection{Petite présentation}
+\subsection{Présentation}
 
-\subsection{Pourquoi c'est bien dans notre cas, comparaison avec d'autres solutions}
+\subsection{Avantages et désavantages}
+Pourquoi c'est bien dans notre cas, comparaison avec d'autres solution
+
+\subsection{Comparaison avec d'autres solutions}
 
 \chapter{Implémentation}
 
-\section{Partie agent}
+\section{Architecture}
 
-\section{Partie moodlle}
+La platforme que nous proposons est basé sur des conteneurs Docker. Ainsi chaque composant peut, dans l'absolu, être utilisé de manière
+completement indépendante les uns des autres. La figure~\ref{architecture} représente l'architecture telle qu'envisagée lors de ce projet.
+
+\begin{figure}[h]
+   \caption{\label{architecture} Architecture de la plateforme}
+   \includegraphics[width=\textwidth, keepaspectratio=true]{architecture.png}
+\end{figure}
+
+\section{Agent}
+
+\section{Moodle}
+
+\section{tracker.js}
+
+\section{Overview}
 
 \subsection{}
 
 \subsection{}
 
 \chapter{Utilisation}
-
-
 
 \section{Cas d'utilisation : Le MOOC bases de données}
 
