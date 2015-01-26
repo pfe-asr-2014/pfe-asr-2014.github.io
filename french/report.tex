@@ -22,6 +22,39 @@
   framerule=2pt
 }
 
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{FFFFFF}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
 \usepackage{lastpage}
 \usepackage{fancyhdr}
 
@@ -220,6 +253,46 @@ Enfin des conteneurs d'apprentissages composent les environnement des travaux pr
 \section{Agent}
 
 \section{Moodle}
+
+Afin de pouvoir insérer les informations relatives aux travaux pratiques dans le système moodle il nous faut une porte d'entrée dans le-dit système. Il n'existe malheureusement pas de façon simple de fournir ces informations à moodle (c'est-à-dire sans développer un plugin spécifique).
+C'est donc ce que nous avons fait. Le plugin développer est très simple dans son utilisation: après installation du plugin et identification de l'utilisateur, il est possible via une simple requête HTTP de fournir à moodle un «évènement». La figure~\ref{seq-submit-event} ci-après représente la manière de soumettre un évènement.
+
+\begin{figure}[h]
+   \caption{\label{seq-submit-event} Diagramme de séquence de la soumission d'un évènement}
+   \includegraphics[width=8cm, keepaspectratio=true]{mem-seq-submit-event.png}
+\end{figure}
+
+Comme visible dans la figure~\ref{seq-submit-event}, le procédé se fait en deux requêtes HTTP. La première est faite de la manière suivante:
+
+\begin{lstlisting}[caption={1. Requête d'un token}]
+GET http://localhost:8080/login/token.php?
+  service=mem&
+  username=&
+  password=
+\end{lstlisting}
+
+Il faut que les champs «username» et «password» soit complété avec le nom d'utilisateur et le mot de passe du compte moodle de l'apprenant.
+Moodle renvoie alors le token avec la réponse au format json suivante:
+
+\begin{lstlisting}[language=json, caption={2. Retourne le token}]
+{"token":"le token de l'utilisateur"}
+\end{lstlisting}
+
+Maintenant que nous avons la possibilité de prouver que nous sommes bien un utilisateur nous pouvons envoyer un évènement à moodle via la requête HTTP suivante:
+
+\begin{lstlisting}[caption={3. Soumet un évènement}]
+POST http://localhost:8080/webservice/rest/server.php?
+    wsfunction=local_mem_post_event&
+    wstoken=<token de l'utilisateur>&
+    moodlewsrestformat=json&
+    category="mooc"&
+    action="begin"&
+    label="Relational Database"&
+    datetime="2014-12-11T16:31:12.436+01:00"
+\end{lstlisting}
+
+Les quatres dernier champs sont les plus importants: la catégorie, l'action, le label et le temps permettent de spécifier un évènement. Avec une combinaison de ces quatres valeurs, on peut décrire tous les évènements produits par les apprenants. Par exemple dans la requête précédente nous avons soumis un évènement concernant le début du cours concernant les bases de données relationnels, de plus l'apprenant à commencer ce cours le 11 décembre en fin d'après-midi (16h30).
+Le format de description est suffisament générique pour qu'il puisse décrire un évènement métier (début d'un cours) ou un évènement technique (soumission d'une requête SQL) tout en gardant un format unique dans les différents cas. Si le format d'évènement choisi avait été moins générique, il aurait falu en maintenir plusieurs suivant le type d'information à transmettre ce qui aurait augmenter la complexité du système sans gain significatif.
 
 \section{tracker.js}
 
