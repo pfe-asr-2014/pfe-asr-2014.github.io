@@ -14,7 +14,7 @@
 \title{Environnements de MOOC avec Docker}
 \subtitle{Projet de fin d'études - VAP ASR}
 \date{28 Janvier 2015}
-\author{François Monniot \& Alexis Mousset}
+\author{François Monniot \& Alexis Mousset\\ Encadrants : Olivier Berger \& Christian Bac}
 \institute{\includegraphics[width=1cm]{logo.jpg}}
 \titlegraphic{
    \includegraphics[width=2cm]{logo_TSP.jpg}
@@ -29,15 +29,6 @@
 \begin{frame}[fragile]
   \frametitle{Notre projet}
 
-  Exemple de \emph{code} (du \alert{beau}) :
-
-  \begin{minted}[fontsize=\footnotesize]{javascript}
-// Instanciation du tracker
-var tracker = new Tracker({distant: 'url'});
-
-// On ecoute les evenements "onclick" sur les elements de classe "my-element"
-tracker.on('.my-element').track('click');
-  \end{minted}
   \begin{description}
     \item[PowerPoint] Meeh.
     \item[Beamer] Yeeeha.
@@ -46,11 +37,21 @@ tracker.on('.my-element').track('click');
 
 \section{Présentation}
 
+
+\begin{frame}[fragile]
+  \frametitle{Contexte}
+
+  \begin{itemize}[<+- | alert@+>]
+  \item MOOC lancé à Télécom SudParis en 2013 (sur Moodle)
+  \item Plusieurs projets à l'école et dans l'institut, ou Paris-Saclay
+  \item Environnement de TP pour les bases de données basé sur Vagrant
+  \end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]
   \frametitle{Qu'est-ce qu'un conteneur ?}
   \begin{center}
   
- 
   \includegraphics[scale = 0.5]{dockervsvm.png}
    \end{center}
 \end{frame}
@@ -86,10 +87,24 @@ tracker.on('.my-element').track('click');
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Création des conteneurs}
+  \begin{center}
+  \includegraphics[scale = 0.35]{infrastructure-creation.png}
+   \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Remontée des événements}
+  \begin{center}
+  \includegraphics[scale = 0.32]{architecture.png}
+   \end{center}
+\end{frame}
+
 \section{Cas d'utilisation}
 
 \begin{frame}[fragile]
-  \frametitle{Dockerfile}
+  \frametitle{Enseignant}
 
   Exemple de \emph{Dockerfile} :
 
@@ -102,7 +117,7 @@ RUN mkdir -p /docker-entrypoint-initdb.d
 COPY ./initdb-setupdb.sh /docker-entrypoint-initdb.d/setupdb.sh
   \end{minted}
   
-  Lancement d'un instance basée sur cette image :
+  Lancement d'une instance basée sur cette image :
   
     \begin{minted}[fontsize=\footnotesize]{bash}
 docker build -t mydb .
@@ -110,6 +125,35 @@ docker run mydb
   \end{minted}
   
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Apprenant}
+
+  \begin{itemize}[<+- | alert@+>]
+      \item Installation de boot2docker (ou docker si sous Linux)
+      \item Lancement de boot2docker
+      \item Configuration des accès Moodle dans un fichier
+      \item Exécution de scripts d'installation : téléchargement des images, lancement des conteneurs
+      \item Lancement d'une éventuelle interface web dans le navigateur, en local
+    \end{itemize}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Outils utilisés}
+
+  \begin{itemize}
+      \item Docker
+      \item Fig
+      \item Mosquitto
+      \item Moodle
+      \item Python
+      \item PHP
+      \item NodeJS
+    \end{itemize}
+  
+\end{frame}
+
 
 \section{Démonstration}
 
