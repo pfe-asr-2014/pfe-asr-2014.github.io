@@ -21,6 +21,9 @@
   framerule=2pt
 }
 
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
 \usepackage{lastpage}
 \usepackage{fancyhdr}
 
@@ -37,8 +40,6 @@
 % %\renewcommand{\headrulewidth}{0pt}
 % %\renewcommand{\footrulewidth}{0pt}
 
-
-
 \title{Environnements de TP pour MOOC}
 \author{François Monniot \& Alexis Mousset}
 
@@ -50,7 +51,6 @@
 }}
 
 \addbibresource{report.bib}
-
 
 \begin{document}
 
@@ -69,7 +69,9 @@
 
 \subsection{Contexte des besoins de TP}
 
-\section{Docker}
+Télécom SudParis a lancé son premier MOOC en décembre 2013.
+
+\section{Solution apportée}
 
 \subsection{Expression précise du besoin}
 
@@ -179,7 +181,19 @@ Le tableau \ref{compat} résume la compatibilité des environnements basés sur 
 
 \section{Partie agent}
 
+
+\includegraphics[scale=0.45]{docker}
+
 Parite agent en python
+
+bug streaming logs
+
+scéma de nommage
+
+%erreur mqtt : https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=446062
+
+faire un filtre dans l'agent
+
 
 \section{Partie moodle}
 
@@ -194,6 +208,14 @@ Parite agent en python
 \pagestyle{fancy}
 
 \section{Cas d'utilisation : Le MOOC bases de données}
+
+\subsection{Infrastructure}
+
+Construction des images
+
+docker hub
+
+moodle
 
 \subsection{Côté professeur}
 
@@ -220,7 +242,7 @@ Une fois le container lancé, l'insterface web est accessible en local sur la ma
 
 \subsection{Côté apprenant}
 
-L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à sont environnement de TP.
+L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à son environnement de TP.
 
 % todo : doc apprenant
 
