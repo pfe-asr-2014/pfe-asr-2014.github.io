@@ -99,19 +99,13 @@
 \maketitle
 \tableofcontents
 
-\begin{abstract}
 
-\end{abstract}
 \thispagestyle{fancy}
 \chapter{Introduction}
 \thispagestyle{fancy}
 \section{MOOC}
 
-\subsection{Contexte des MOOC à TSP et en général}
-
-\subsection{Contexte des besoins de TP}
-
-Télécom SudParis a lancé son premier MOOC en décembre 2013.
+Télécom SudParis a lancé son premier MOOC en décembre 2013, et a plusieurs projets de développement de nouveaux MOOC au sein de l'école ou avec des partenaires (institut, Paris-Saclay). Il existe donc un besoin d'une solution de travaux pratiques permettant aux participants de travailler sur un environnement propre.
 
 \section{Solution apportée}
 
@@ -131,7 +125,7 @@ particulières.
 \subsection{Qu'est-ce que Docker ?}
 
 Docker\cite{website:whatis-docker} a été lancé en tant que projet open-source en mars 2013.
-C'est un programme permettant de gérer le déploiement d'un type de virtualisation particulier : les conteneurs.
+C'est un programme permettant de gérer le déploiement d'un type de virtualisation particulier : les conteneurs. Sa particularité est de proposer un workflow différent des machines virtuelles classique, en considérant les instances comme jetables, et de gérer les images en couches, avec un stockage défférentiel et un versionnement des données des images.
   
 \subsection{Adéquation de la solution}
 
@@ -150,7 +144,7 @@ Par rapport à Vagrant :
 
 \subsubsection{Compatibilité logicielle}
 
-Docker nécessite en général un noyau linux supérieur à 3.8 (sorti en février 2013) à cause d'un bug LXC\cite{website:bug-lxc} présent dans les versions antérieures, ainsi qu'un noyau 64 bit.
+Docker nécessite en général un noyau linux supérieur à 3.8 (sorti en février 2013) à cause d'un bug LXC présent dans les versions antérieures, ainsi qu'un noyau 64 bit.
 
 Distribution pleinement compatibles :
 \begin{itemize}
