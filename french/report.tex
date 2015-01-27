@@ -437,48 +437,109 @@ faire un filtre dans l'agent
 
 \pagestyle{fancy}
 
-\section{Cas d'utilisation : Le MOOC bases de données}
+Ce chapitre décrit l'utilisation de notre plateforme de deux points de vue: celui de l'enseignant qui veut rendre accessible son cours depuis la plateforme et du point de vue de l'apprenant qui veut y acceder.
+Cette description sera basé sur le cas d'utilisation du MOOC de base de donnée afin d'en faciliter la compréhension.
 
-\subsection{Infrastructure}
+\section{Infrastructure}
 
-Construction des images
+Commencons par préciser l'infrastructure avec laquelle nous allons travailler (figure~\ref{infrastructure-creation}).
 
-docker hub
+\begin{figure}[!h]
+   \caption{\label{infrastructure-creation} Architecture de l'environnement de création}
+   \centering
+   \includegraphics[width=\textwidth, keepaspectratio=true]{infrastructure-creation.png}
+\end{figure}
 
-moodle
+La première chose que l'on remarque dans cette architecture c'est la place essentiel que joue GitHub (et par extension le gestionnaire de version git). Nous avons fais ce choix car il permet une construction automatique des images dès qu'une modification à lieu sur le dépôt distant (Il est possible de se passer de git, il faut pour cela construire localement l'image puis la pousser manuellement sur un registry docker, docker hub ici). Ce choix nous a parrus moins interessant pour plusieurs raisons: la première c'est qu'en enforcant l'utilisation d'un dépôt git publique, le code de l'image est forcement publique ce qui, dans le cadre d'un projet libre, est bénéfique; la seconde raison est sécuritaire, si il n'y a pas de dépôt central alors il faut que la personne envoyant l'image en ligne est les accréditations (nom utilisateurs, mot de passe) or nous ne voulons pas que tous nos contributeurs est accès à nos identifiants. Plus encore, avec un dépôt dédié nous pouvons gérer de manière plus fine les droits (qui peut modifier quoi) tout en gardant un compte unique pour publier les images.
 
-\subsection{Côté professeur}
+Une fois le dépôt git envoyé en ligne (nous verrons le contenu de ce dépôt dans la section suivante), la construction de l'image débute automatiquement. Une fois l'image construite, elle est immédiatement disponible pour tout les apprenants !
+
+\section{Côté professeur}
 
 L'objectif côté professeur est de faciliter la mise en place d'environnements de TP par des non spécialistes de docker (éventuellement assistés en cas de problèmes).
-La configuration des machines de TP s'effectue sur un dépôt git contenant les scripts de création des environnements, ainsi que les contenus qui y seront ajoutés. Les images sont ensuite générées et déposées.
-Le format de configuration est le Dockerfile, qui est constitué d'une suite de commandes lancées et de copies de fichiers. Il est très simple, si on sait configurer un système, de le consigner dans un Dockerfile.
+La configuration des machines de TP s'effectue sur un dépôt git contenant les scripts de création des environnements, ainsi que les contenus qui y seront ajoutés. Les images sont ensuite générées automatiquement via l'infrastructure vue précédement.
+Le format de configuration est le Dockerfile. Il s'agit d'un fichier qui est constitué d'une suite de commandes qui décrivent les opérations à faire. Il est très simple, si on sait configurer un système, de le consigner dans un Dockerfile.
 
-La mise en place des TP de ce MOOC nécessite deux conteneurs : un pour la base de données et un pour le serveur et les applications web, ainsi que du conteneur permettant le suivi.
+Un exemple de Dockerfile pour afficher le fameux «Hello Worle» serait:
 
-\begin{lstlisting}[language=Bash,caption={Dockerfile de base}]
-RUN apt-get update && apt-get install my_software
-COPY configuration_file /etc/my_software/
-EXPOSE 80
-# The command that should be executed
-CMD ["/usr/bin/my_software"]
+\begin{lstlisting}[language=Bash,caption={Dockerfile Hello World}]
+# On utilise une image debian
+FROM debian:jessie
+
+# On copie notre fichier contenant Hello World
+COPY hello.txt /hello
+
+# On execute une instruction shell lors de la construction de l'image
+RUN cat /hello
+
+# On precise a docker la commande a lancer lors du lancement du conteneur
+CMD ["cat", "/hello"]
 \end{lstlisting}
 
-Le conteneur de base de données est basé sur l'image postgreSQL officielle (elle même basée
-sur Debian). La configuration et le peuplement des bases de données sont effectuées à partir d'un script shell appelé lors de la création du conteneur. Ce script appelle les scripts de peuplement sql, et permet de créer les utilisateurs nécessaires.
+Ou de manière encore plus simple:
 
-L'image web est basée sur debian, sur laquelle est installée apache et phppgadmin. De plus des fichiers suppmémentaire sont ajoutés dans un autre virtualhost, qui contient donc les fichiers applicatifs liés au TP.
+\begin{lstlisting}[language=Bash,caption={Dockerfile Hello World simplifié}]
+FROM busybox
+CMD ["echo", "Hello World"]
+\end{lstlisting}
 
-Une fois le container lancé, l'insterface web est accessible en local sur la machine.
+Remarque: si l'on veut construire conteneur localement (à des fin de test par exemple), il faut executer la commande 
+\begin{lstlisting}[language=Bash,caption={Construire une image docker}]
+docker build -t <nom de votre image> <chemin de votre image>
+\end{lstlisting}
 
-\subsection{Côté apprenant}
+La mise en place des TP de ce MOOC nécessite deux conteneurs : un pour la base de données et un pour les applications web (le conteneur permettant le suivi est déjà créé et fonctionne sur la machine de l'apprenant si celui ci ne s'y est pa opposé).
 
-L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à son environnement de TP.
+Le conteneur de base de données est basé sur l'image postgreSQL officielle (elle même basée sur Debian). La configuration et le peuplement des bases de données sont effectuées à partir d'un script shell appelé lors de la création du conteneur (c'est une fonctionnalité de l'image postgres). Ce script shell appelle les scripts de peuplement SQL ce qui permet de créer les utilisateurs nécessaires, les tables SQL ainsi que de fournir un certain nombre d'enregistrement SQL.
 
-% todo : doc apprenant
+L'image web est basée sur debian, sur laquelle on installe apache et phppgadmin. Des fichiers supplémentaire contenant l'applicatif du TP sont ajoutés sur l'image et on configure apache avec un autre virtualhost pour cette application.
 
-overview ?
+Une fois la configuration terminée, il suffit de pousser le code sur github (si c'est une nouvelle image, voir avec le détenteur du compte Docker Hub pour configurer l'image) et attendre la fin de sa construction.
 
+\section{Côté apprenant}
+
+L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. 
+
+Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à son environnement de TP. Cette dernière étape peut être faite de deux manières différentes.
+
+\subsection{En ligne de commande}
+
+L'apprenant peut choisir de démarrer les conteneurs contenant l'environnement de TP via la ligne de commande. Pour cela il doit se réferrer au dépôt concernant son cours et lire le «README» pour y trouver les instructions. En effet, chaque conteneur a ses propres prérequis (certain nécessite de démarrer plusieurs conteneur, d'autres non; certain exposeront des port TCP et pas d'autres) et il n'y a pas de méthode universelle.
+
+Par exemple, pour démarrer le TP de base de donnée relationnel il faut utiliser les commandes:
+
+\begin{lstlisting}[language=Bash,caption={Démarrer les conteneurs du MOOC de base de donnée}]
+docker run -d --name tsp-moocdb-postgres \
+           fmonniot/tsp-moocdb-postgres
+docker run -d --name tsp-moocdb-web \
+           -p 8080:80 \
+           --link tsp-moocdb-postgres:tsp-moocdb-postgres \
+           fmonniot/tsp-moocdb-web
+\end{lstlisting}
+
+
+\subsection{Via l'interface graphique}
+
+L'apprenant peut aussi utiliser une interface graphique pour gérer l'ensemble de ses environnements de TP. Pour cela il lui faut lancer le conteneur contenant l'interface graphique puis de se rendre à l'adresse indiqué lors du démarrage du conteneur.
+
+\begin{lstlisting}[language=Bash,caption={Démarrer le conteneur Overview}]
+# Si il utilise boot2docker
+docker run -it -p 5000:5000 --name tsp-mooc-overview \
+           -v /var/run/docker.sock:/var/run/docker.sock \
+           --env HOST_IP=$(boot2docker ip) \
+           fmonniot/tsp-mooc-overview
+
+# Sinon
+docker run -it -p 5000:5000 --name tsp-mooc-overview \
+           -v /var/run/docker.sock:/var/run/docker.sock \
+           fmonniot/tsp-mooc-overview
+\end{lstlisting}
+
+L'utilisateur peut alors aller à l'adresse indiquée lors du démarrage du conteneur afin d'avoir accès à la page de gestion des environnement de TP.
+Une fois sur la page web, il est très simple d'interagire en choisissant l'action a effectuer par cours (lancer le cours, l'installer, le désinstaller, etc…).
 
 \printbibliography
+\lstlistoflistings
+\listoffigures
 
 \end{document}
