@@ -15,6 +15,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {2.8}Extrait de la configuration fig}{11}{lstlisting.2.8}
 \defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {2.9}Configuration du service de reporting}{12}{lstlisting.2.9}
+\defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {3.1}Dockerfile Hello World}{14}{lstlisting.3.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {3.2}Dockerfile Hello World simplifi\IeC {\'e}}{14}{lstlisting.3.2}

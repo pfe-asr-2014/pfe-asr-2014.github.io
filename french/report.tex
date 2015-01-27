@@ -423,6 +423,27 @@ Nous utilisons le broker Mosquitto\cite{mosquitto}, packagé dans Debian. Nous a
 
 Du côté serveur, un conteneur (tsp-mooc-subscriber) est chargé de souscrire au topic contenant les événements, et de les transmettre à moodle en HTTP.
 
+Les fichier \texttt{fig.yml} montre les liens entre conteneurs :
+
+\begin{lstlisting}[caption={Configuration du service de reporting}]
+agent:
+  image: tsp-mooc-agent
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  links:
+    - broker
+subscriber:
+  image: tsp-mooc-subscriber
+  links:
+    - server
+server:
+  image: tsp-mooc-server
+broker:
+  image: tsp-mooc-broker
+  links:
+    - server
+\end{lstlisting}
+
 \chapter{Utilisation}
 
 \thispagestyle{fancy}
