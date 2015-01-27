@@ -39,13 +39,25 @@
 
 
 \begin{frame}[fragile]
+  \frametitle{MOOC}
+
+  
+\end{frame}
+
+\begin{frame}[fragile]
   \frametitle{Contexte}
 
   \begin{itemize}[<+- | alert@+>]
   \item MOOC lancé à Télécom SudParis en 2013 (sur Moodle)
   \item Plusieurs projets à l'école et dans l'institut, ou Paris-Saclay
   \item Environnement de TP pour les bases de données basé sur Vagrant
+  \item Besoin de continuer à créer des environnements de TP
   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Proposition Docker}
+
 \end{frame}
 
 \begin{frame}[fragile]
@@ -87,11 +99,22 @@
 \end{itemize}
 \end{frame}
 
+
+\section{Implémentation}
+
 \begin{frame}[fragile]
-  \frametitle{Création des conteneurs}
-  \begin{center}
-  \includegraphics[scale = 0.35]{infrastructure-creation.png}
-   \end{center}
+  \frametitle{Outils utilisés}
+
+  \begin{itemize}
+      \item Docker
+      \item Fig
+      \item Mosquitto
+      \item PHP
+      \item Moodle
+      \item Python
+      \item Flask
+    \end{itemize}
+  
 \end{frame}
 
 \begin{frame}[fragile]
@@ -101,7 +124,42 @@
    \end{center}
 \end{frame}
 
-\section{Cas d'utilisation}
+\begin{frame}[fragile]
+  \frametitle{Plugin moodle}
+  \begin{center}
+
+   \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Reporting}
+  \begin{center}
+
+   \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Tracker}
+  \begin{center}
+
+   \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Overview}
+  \begin{center}
+
+   \end{center}
+\end{frame}
+
+\section{Utilisation}
+
+\begin{frame}[fragile]
+  \frametitle{Création des conteneurs}
+  \begin{center}
+  \includegraphics[scale = 0.35]{infrastructure-creation.png}
+   \end{center}
+\end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Enseignant}
@@ -135,21 +193,6 @@ docker run mydb
       \item Configuration des accès Moodle dans un fichier
       \item Exécution de scripts d'installation : téléchargement des images, lancement des conteneurs
       \item Lancement d'une éventuelle interface web dans le navigateur, en local
-    \end{itemize}
-  
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Outils utilisés}
-
-  \begin{itemize}
-      \item Docker
-      \item Fig
-      \item Mosquitto
-      \item Moodle
-      \item Python
-      \item PHP
-      \item NodeJS
     \end{itemize}
   
 \end{frame}
