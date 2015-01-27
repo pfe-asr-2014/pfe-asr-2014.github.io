@@ -22,6 +22,9 @@
   framerule=2pt
 }
 
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{FFFFFF}
 \definecolor{delim}{RGB}{20,105,176}
@@ -79,8 +82,6 @@
 % %\renewcommand{\headrulewidth}{0pt}
 % %\renewcommand{\footrulewidth}{0pt}
 
-
-
 \title{Environnements de TP pour MOOC}
 \author{François Monniot \& Alexis Mousset}
 
@@ -92,7 +93,6 @@
 }}
 
 \addbibresource{report.bib}
-
 
 \begin{document}
 
@@ -111,7 +111,9 @@
 
 \subsection{Contexte des besoins de TP}
 
-\section{Docker}
+Télécom SudParis a lancé son premier MOOC en décembre 2013.
+
+\section{Solution apportée}
 
 \subsection{Expression précise du besoin}
 
@@ -258,9 +260,9 @@ Le coté apprenant est composé de deux conteneurs essentiels si déployer sur u
 
 Si l'environnement est disponible sur la machine de l'apprenant alors le conteneur Overview permet de fournir une interface graphique qui permet gérer les conteneurs d'apprentissages de manières extremement simple.
 
-Enfin des conteneurs d'apprentissages composent les environnement des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter, de façon anonyme ou non, des informations sur leurs utilisation, l'avancement de l'apprenant voir des résultats d'examen.
+\subsection{Plugin moodle}
 
-\section{Agent}
+Enfin des conteneurs d'apprentissages composent les environnement des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter, de façon anonyme ou non, des informations sur leurs utilisation, l'avancement de l'apprenant voir des résultats d'examen.
 
 \section{Moodle}
 
@@ -321,7 +323,6 @@ var tracker = new Tracker({distant: 'url'});
 // On ecoute les evenements "onclick" sur les elements de classe "my-element"
 tracker.on('.my-element').track('click');
 \end{lstlisting}
-
 
 \section{Overview}
 
@@ -413,6 +414,18 @@ Afin de pouvoir gérer ces services, on introduit la notion d'état desdits serv
    \includegraphics[width=\textwidth, keepaspectratio=true]{overview-states.png}
 \end{figure}
 
+\section{Agent}
+
+\includegraphics[scale=0.45]{docker}
+
+bug streaming logs
+
+scéma de nommage
+
+%erreur mqtt : https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=446062
+
+faire un filtre dans l'agent
+
 \pagestyle{fancy}
 
 \chapter{Utilisation}
@@ -420,6 +433,14 @@ Afin de pouvoir gérer ces services, on introduit la notion d'état desdits serv
 \pagestyle{fancy}
 
 \section{Cas d'utilisation : Le MOOC bases de données}
+
+\subsection{Infrastructure}
+
+Construction des images
+
+docker hub
+
+moodle
 
 \subsection{Côté professeur}
 
@@ -446,7 +467,7 @@ Une fois le container lancé, l'insterface web est accessible en local sur la ma
 
 \subsection{Côté apprenant}
 
-L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à sont environnement de TP.
+L'apprenant doit d'abord installer boot2docker, qui se charge d'installer git et virtualbox s'ils ne sont pas présents. Le téléchargement est de 122 Mo. L'installeur ajoute un raccourci dans les menus permettant d'accéder à un shell sur le VM boot2docker, sans avoir à passer par virtualbox. Ensuite l'apprenant doit exécuter des commandes permettant de récupérer les images correspondant à son TP, puis à les lancer. Il peut ensuite accéder à son environnement de TP.
 
 % todo : doc apprenant
 
