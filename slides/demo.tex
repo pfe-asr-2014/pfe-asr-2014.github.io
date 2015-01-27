@@ -115,7 +115,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Remontée des événements}
+  \frametitle{Architecture de la plateforme}
   \begin{center}
   \includegraphics[scale = 0.32]{architecture.png}
    \end{center}
@@ -123,9 +123,26 @@
 
 \begin{frame}[fragile]
   \frametitle{Plugin moodle}
-  \begin{center}
+  Pourquoi Moodle ?
+  \pause
+  \begin{itemize}[<+- | alert@+>]
+    \item Plateforme des MOOCs
+    \item Capacité de faire des rapports
+  \end{itemize}
+  \pause
+  Et un plugin ?
+  \pause
+  \begin{itemize}[<+- | alert@+>]
+    \item Nécessite un point d'entrée pour la remonté d'évènement
+    \item Pas de solution existante
+  \end{itemize}
+\end{frame}
 
-   \end{center}
+\begin{frame}[fragile]
+  \frametitle{Plugin moodle: Soumettre un évènement}
+  \begin{center}
+    \includegraphics[scale = 0.5]{../french/mem-seq-submit-event.png}
+  \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -149,15 +166,32 @@
 \begin{frame}[fragile]
   \frametitle{Tracker}
   \begin{center}
-
-   \end{center}
+    \begin{itemize}[<+- | alert@+>]
+      \item Observation des évènements apprenants
+      \item Suivi comportemental
+      \item Permet de nouvelle réponse
+    \end{itemize}
+  \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Overview}
   \begin{center}
-
-   \end{center}
+    Certaines problèmatiques font de la résistance
+    \pause
+    \begin{itemize}[<+- | alert@+>]
+      \item Difficulté de lancer un cours
+      \item Pas de vue d'ensemble des cours
+    \end{itemize}
+    \pause
+    Naissance de «Overview»
+    \pause
+    \begin{itemize}[<+- | alert@+>]
+      \item Interface graphique
+      \item Permet de gérer les cours
+      \item Liste tous les cours disponible
+    \end{itemize}
+  \end{center}
 \end{frame}
 
 \section{Utilisation}
@@ -167,6 +201,37 @@
   \begin{center}
   \includegraphics[scale = 0.35]{infrastructure-creation.png}
    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Enseignant}
+  
+  Description des applications
+  
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.5\textwidth}
+      \begin{minted}[fontsize=\footnotesize]{bash}
+tsp-moocdb-postgres/
+├── db-creation
+│   ├── script-film.sql
+│   ├── script-init.sql
+│   ├── script-permissions.sql
+│   └── script-vins.sql
+├── Dockerfile
+└── initdb-setupdb.sh
+      \end{minted}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{minted}[fontsize=\footnotesize]{bash}
+tsp-moocdb-web/
+├── appli
+│   ├─ … (13 files)
+├── Dockerfile
+└── index
+    └── index.html
+      \end{minted}
+    \end{column}
+​  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
