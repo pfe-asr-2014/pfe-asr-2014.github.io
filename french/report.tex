@@ -119,23 +119,22 @@ Ces environnements doivent pourvoir êtres utilisés sur les postes des apprenan
   \item Compatibilité matérielle : utilisable sur du matériel ancien et peu performant
 \end{itemize}
 
-Ces environnements doivent aussi être faciles à créer et ne nécessitent que peu de compétences
+Ces environnements doivent aussi être faciles à créer et ne nécessiter que peu de compétences
 particulières.
 
 \subsection{Qu'est-ce que Docker ?}
 
 Docker\cite{website:whatis-docker} a été lancé en tant que projet open-source en mars 2013.
-C'est un programme permettant de gérer le déploiement d'un type de virtualisation particulier : les conteneurs. Sa particularité est de proposer un workflow différent des machines virtuelles classique, en considérant les instances comme jetables, et de gérer les images en couches, avec un stockage défférentiel et un versionnement des données des images.
+C'est un programme permettant de gérer le déploiement d'un type de virtualisation particulier : les conteneurs. Sa particularité est de proposer un workflow différent des machines virtuelles classique, en considérant les instances comme jetables, et de gérer les images en couches, avec un stockage différentiel et un versionnement des données des images.
+  
+Docker fonctionne uniquement sous Linux (car il utilise directement des fonctionnalités du noyau), mais est utilisable sous Windows et Mac OS X en passant par une machine virtuelle sous Tiny Linux OS (consomme 27 MO de RAM) fonctionnant sous VirtualBox appelé boot2docker. L'installeur installe VirtualBox, MSYS-git et la machine virtuelle.
   
 \subsection{Adéquation de la solution}
-
-Utilisation de boot2docker, qui installe VirtualBox, MSYS-git
-
-tiny core linux : 27MB de RAM dans  boot2docker
 
 Par rapport à Vagrant :
 \begin{itemize}
   \item Mêmes besoins matériels : support de la virtualisation, 2 Go de RAM pour un usage confortable.
+  \item Mêmes consommation de ressources RAM et CPU, moins d'espace disque
   \item Le principal obstacle au niveau compatibilité est la nécessité d'un OS 64 bit.
   \item Au niveau professeur, utilisation de scripts pour la mise en place. Facilité de migration vers Docker.
   \item Au niveau apprenant, installation légèrement plus simple (boot2docker), et mise à jour facilitée en utilisant les mises à jour incrémentales des images docker.
@@ -303,7 +302,7 @@ Le format de description est suffisamment générique pour qu'il puisse décrire
 \section{tracker.js}
 
 L'intérêt de la nouvelle plateforme de MOOC c'est d'être capable de fournir aux enseignants des retours sur ce qu'on fait les apprenants. Ainsi des questions comme «Est-ce que le TP a la bonne difficulté ?» ou «Pourquoi est-ce que la majorité des apprenants se trompent à la question 5?» peuvent trouver une réponse dans le comportement des apprenants (par exemple, la majorité des réponses sont les mêmes, la question posée est-peut être mal formulée). Aussi faut-il connaître les actions des apprenants lorsqu'ils réalisent le TP.
-C'est pour répondre à cette problématique qu'est né tracker.js.
+C'est pour répondre à cette problématique qu'est né \texttt{tracker.js}.
 
 Tracker.js est une simple bibliothèque javascript à intégrer dans une page web et qui permet de déclarer un certain nombre d'évènement à surveiller.
 De manière pratique cela permet d'enregistrer les cliques de souris, les frappes clavier ou un évènement personnalisé et d'envoyer les informations à l'agent pour qu'il relaie les informations à moodle.
@@ -332,7 +331,7 @@ D'un point de vue utilisateur il s'agit d'un simple site web qui propose, pour c
 Le code javascript à été écrit pour être facilement testable et modulable. Il se décompose en plusieurs module (ou fichier):
 
 \begin{itemize}
-  \item \textbf{log.js} Bibliothèque développé par Adam Schwartz est qui fourni plusieurs amélioration pour journaliser des informations (notamment l'utilisation du markdown ou l'affichage de code).
+  \item \textbf{log.js} Bibliothèque développé par Adam Schwartz est qui fournit plusieurs amélioration pour journaliser des informations (notamment l'utilisation du markdown ou l'affichage de code).
   \item \textbf{api.js} Un objet permettant d'abstraire les appels au serveur via une interface implémentant la «Désignation chainée». Ainsi une requête PATCH à notre serveur avec un objet quelconque s'effectue avec le code suivant:
     \begin{lstlisting}[language=javascript,caption={Requête PATCH à l'api}]
     var api = new Api('http://mon-serveur.com/api/v1/');
@@ -461,7 +460,7 @@ L'objectif côté professeur est de faciliter la mise en place d'environnements 
 La configuration des machines de TP s'effectue sur un dépôt git contenant les scripts de création des environnements, ainsi que les contenus qui y seront ajoutés. Les images sont ensuite générées automatiquement via l'infrastructure vue précédement.
 Le format de configuration est le Dockerfile. Il s'agit d'un fichier qui est constitué d'une suite de commandes qui décrivent les opérations à faire. Il est très simple, si on sait configurer un système, de le consigner dans un Dockerfile.
 
-Un exemple de Dockerfile pour afficher le fameux «Hello Worle» serait:
+Un exemple de Dockerfile pour afficher le fameux «Hello World» serait:
 
 \begin{lstlisting}[language=Bash,caption={Dockerfile Hello World}]
 # On utilise une image debian

@@ -263,13 +263,13 @@ docker run mydb
 
   \begin{minted}[fontsize=\footnotesize]{bash}
 web:
-  build: web
+  build: tsp-moocdb-web
   links:
    - db
   ports:
-   - "8000:8000"
+   - "8080:80"
 db:
-  image: postgres
+  build: tsp-moocdb-postgres
   \end{minted}
   
   Création et lancement des conteneurs :
