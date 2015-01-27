@@ -270,8 +270,10 @@ Afin de pouvoir insérer les informations relatives aux travaux pratiques dans l
 C'est donc ce que nous avons fait. Le plugin développer est très simple dans son utilisation: après installation du plugin et identification de l'utilisateur, il est possible via une simple requête HTTP de fournir à moodle un «évènement». La figure~\ref{seq-submit-event} ci-après représente la manière de soumettre un évènement.
 
 \begin{figure}[h]
-   \caption{\label{seq-submit-event} Diagramme de séquence de la soumission d'un évènement}
-   \includegraphics[width=8cm, keepaspectratio=true]{mem-seq-submit-event.png}
+  \begin{center}
+    \caption{\label{seq-submit-event} Diagramme de séquence de la soumission d'un évènement}
+    \includegraphics[width=8cm, keepaspectratio=true]{mem-seq-submit-event.png}
+   \end{center}
 \end{figure}
 
 Comme visible dans la figure~\ref{seq-submit-event}, le procédé se fait en deux requêtes HTTP. La première est faite de la manière suivante:
@@ -328,6 +330,8 @@ tracker.on('.my-element').track('click');
 
 \section{Agent}
 
+La récupération des logs s'effectue au travers de l'API python Docker\cite{docker-py}.
+L'agent récupère les logs de tous les conteneurs, les lit et les envoie au broker local.
 
 \includegraphics[scale=0.45]{docker}
 
