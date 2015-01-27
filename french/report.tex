@@ -410,7 +410,7 @@ Afin de pouvoir gérer ces services, on introduit la notion d'état desdits serv
 
 \section{Agent}
 
-\includegraphics[scale=0.45]{docker}
+\includegraphics[scale=0.37]{docker}
 
 La récupération des logs s'effectue au travers de l'API python Docker\cite{docker-py}.
 L'agent récupère les logs de tous les conteneurs, les lit et les envoie au broker local.
@@ -433,12 +433,6 @@ La configuration de la connexion à moodle s'effectue dans la fichier de configu
 Pour la transmission des logs, plutôt que d'effectuer un accès direct à l'interface Web de moodle, qui pourrait ne pas être accessible de l'apprenant au moment ou il travaille, ou de gérer nous même les message, nous avons utilisé un middleware de messaging. Dans un objectif de légèreté, nous nous sommes tournés vers MQTT, utilisé principalement en M2M, sur l'Internet des objet.
 
 Nous utilisons le broker Mosquitto\cite{mosquitto}, packagé dans Debian. Nous avons rencontré un bug connu\cite{bug-mosquitto}, qui empêchait le client python (paho) de communiquer avec mosquitto. En effet, le client essaie par défaut d'utiliser le protocole MQTT 3.1.1, et mosquitto ne rejetant pas correctement la connexion, le client ne réessaie par avec MQTT 3.1 (seul supporté par la version de mosquitto présente dans les dépôts Debian 7).
-
-scéma de nommage
-
-%erreur mqtt : https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=446062
-
-faire un filtre dans l'agent
 
 \chapter{Utilisation}
 
