@@ -1,4 +1,4 @@
-\documentclass[french,a4paper,11pt]{report}
+\documentclass[a4paper,11pt]{report}
 \usepackage[T1]{fontenc}
 \usepackage{fourier}
 \usepackage[utf8]{inputenc}
@@ -7,6 +7,7 @@
 \usepackage{biblatex}
 \usepackage{xcolor}
 \usepackage[scale=0.8]{geometry}
+\usepackage{graphicx}
 
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily,
@@ -23,6 +24,47 @@
 
 \usepackage{graphicx}
 \graphicspath{ {images/} }
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{FFFFFF}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+\lstdefinelanguage{javascript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true
+}
 
 \usepackage{lastpage}
 \usepackage{fancyhdr}
@@ -179,7 +221,44 @@ Le tableau \ref{compat} résume la compatibilité des environnements basés sur 
 
 \chapter{Implémentation}
 
-\section{Partie agent}
+Le projet est open source et a été développé publiquement. Ainsi tout les codes sources sont disponible sur GitHub et sont regroupé dans l'organisation «pfe-asr-2014». On peut y retrouver les codes sources bien entendue, mais également documentation et tests. Enfin le projet dispose de son propre site web à l'adresse pfe-asr-2014.github.io.
+
+\section{Architecture}
+
+La platforme que nous proposons est basé sur des conteneurs Docker. Ainsi chaque composant peut, dans l'absolu, être utilisé de manière
+completement indépendante les uns des autres. La figure~\ref{architecture} représente l'architecture telle qu'envisagée lors de ce projet.
+
+\begin{figure}[h]
+   \caption{\label{architecture} Architecture de la plateforme}
+   \includegraphics[width=\textwidth, keepaspectratio=true]{architecture.png}
+\end{figure}
+
+Cette architecture se décompose en deux parties principales: la première est gérer par l'école et peut se déployer sur des serveurs dédiés ou sur un cloud; la deuxième partie est basé sur docker et peut donc être déployé dans n'importe quel environnement docker (c'est d'ailleurs une des grandes force de docker), dans notre cas il s'agit couramment de l'ordinateur de l'apprenant mais on peut envisager la possibilité d'héberger ces conteneurs sur un cloud gérer par l'école et directement proposer les accés aux apprenants.
+
+La communication entre les groupes est assuré via l'utilisation du protocole MQ Telemetry Transport (MQTT). Il s'agit d'un protocole de communication prévu pour ne pas consommer beaucoup de ressources (il est par exemple utilisé dans l'embarqué, l'internet des objets mais aussi la communication avec des satellites) et qui est résilient. Il offre un minimum de fonctionnalité (publish/subscribe) ce qui nous suffit, nous l'avons choisi car il permet d'avoir une faible emprunte sur des machines de faible puissance que certains des apprenants peuvent utiliser.
+
+\subsection{Serveur}
+
+Le serveur fonctionne avec trois briques logiciels différents:
+
+\begin{itemize}
+  \item Un plugin moodle qui permet l'enregistrement des traces des apprenants dans le système moodle afin de permettre aux professeurs de créer des rapports.
+  \item Une passerelle entre le serveur MQTT et moodle qui transforme les données obtenu via MQTT dans un format reconnu par moodle.
+  \item Un serveur (broker) MQTT sur lequel les brokers distant vont se connecter pour transmettre les traces qu'ils auront genérer.
+\end{itemize}
+
+Ces trois briques logiciels peuvent être déployer sur différents serveurs si l'on a besoin de répartir la charge. Nous recommandons dans ce cas de grouper la passerelle et le broker MQTT sur une même machine qu'il suffit de multiplier pour passer à l'échelle.
+
+\subsection{Apprenant}
+
+Le coté apprenant est composé de deux conteneurs essentiels si déployer sur un cloud:
+
+\begin{itemize}
+  \item Le broker MQTT qui permet de transmettre les traces des apprenants au serveur distant.
+  \item Et l'agent qui collecte les traces des apprenants émis par les conteneurs de cours, les mets en forme et les retransmets au broker MQTT.
+\end{itemize}
+
+Si l'environnement est disponible sur la machine de l'apprenant alors le conteneur Overview permet de fournir une interface graphique qui permet gérer les conteneurs d'apprentissages de manières extremement simple.
 
 
 \includegraphics[scale=0.45]{docker}
@@ -197,9 +276,71 @@ faire un filtre dans l'agent
 
 \section{Partie moodle}
 
-\subsection{}
+Enfin des conteneurs d'apprentissages composent les environnement des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter, de façon anonyme ou non, des informations sur leurs utilisation, l'avancement de l'apprenant voir des résultats d'examen.
 
-\subsection{}
+\section{Agent}
+
+\section{Moodle}
+
+Afin de pouvoir insérer les informations relatives aux travaux pratiques dans le système moodle il nous faut une porte d'entrée dans le-dit système. Il n'existe malheureusement pas de façon simple de fournir ces informations à moodle (c'est-à-dire sans développer un plugin spécifique).
+C'est donc ce que nous avons fait. Le plugin développer est très simple dans son utilisation: après installation du plugin et identification de l'utilisateur, il est possible via une simple requête HTTP de fournir à moodle un «évènement». La figure~\ref{seq-submit-event} ci-après représente la manière de soumettre un évènement.
+
+\begin{figure}[h]
+   \caption{\label{seq-submit-event} Diagramme de séquence de la soumission d'un évènement}
+   \includegraphics[width=8cm, keepaspectratio=true]{mem-seq-submit-event.png}
+\end{figure}
+
+Comme visible dans la figure~\ref{seq-submit-event}, le procédé se fait en deux requêtes HTTP. La première est faite de la manière suivante:
+
+\begin{lstlisting}[caption={Requête d'un token}]
+GET http://localhost:8080/login/token.php?
+  service=mem&
+  username=&
+  password=
+\end{lstlisting}
+
+Il faut que les champs «username» et «password» soit complété avec le nom d'utilisateur et le mot de passe du compte moodle de l'apprenant.
+Moodle renvoie alors le token avec la réponse au format json suivante:
+
+\begin{lstlisting}[language=json, caption={Retourne le token}]
+{"token":"le token de l'utilisateur"}
+\end{lstlisting}
+
+Maintenant que nous avons la possibilité de prouver que nous sommes bien un utilisateur nous pouvons envoyer un évènement à moodle via la requête HTTP suivante:
+
+\begin{lstlisting}[caption={Soumet un évènement}]
+POST http://localhost:8080/webservice/rest/server.php?
+    wsfunction=local_mem_post_event&
+    wstoken=<token de l'utilisateur>&
+    moodlewsrestformat=json&
+    category="mooc"&
+    action="begin"&
+    label="Relational Database"&
+    datetime="2014-12-11T16:31:12.436+01:00"
+\end{lstlisting}
+
+Les quatres dernier champs sont les plus importants: la catégorie, l'action, le label et le temps permettent de spécifier un évènement. Avec une combinaison de ces quatres valeurs, on peut décrire tous les évènements produits par les apprenants. Par exemple dans la requête précédente nous avons soumis un évènement concernant le début du cours concernant les bases de données relationnels, de plus l'apprenant à commencer ce cours le 11 décembre en fin d'après-midi (16h30).
+Le format de description est suffisament générique pour qu'il puisse décrire un évènement métier (début d'un cours) ou un évènement technique (soumission d'une requête SQL) tout en gardant un format unique dans les différents cas. Si le format d'évènement choisi avait été moins générique, il aurait falu en maintenir plusieurs suivant le type d'information à transmettre ce qui aurait augmenter la complexité du système sans gain significatif.
+
+\section{tracker.js}
+
+L'interet de la nouvelle plateforme de MOOC c'est d'etre capable de fournir aux enseignants des retours sur ce qu'on fait les apprenants. Ainsi des questions comme «Est-ce que le TP a la bonne difficulté ?» ou «Pourquoi est-ce que la majorité des apprenants se trompent à la question 5?» peuvent trouver une réponse dans le comportement des apprenants (par exemple, la majorité des réponses sont les mêmes, la question posée est-peut être mal formulé). Aussi faut-il connaitre les actions des apprenants lorqu'ils réalisent le TP.
+C'est pour répondre à cette problèmatique qu'est née tracker.js.
+
+Tracker.js est une simple bibliothèque javascript à intégré dans une page web et qui permet de déclarer un certain nombre d'évènement à surveiller.
+De maniere pratique cela permet d'enregistrer les cliques de souris, les frappes clavier ou un évènement personalisé et d'envoyer les informations à l'agent pour qu'il relais les informations à moodle.
+
+Le tracker à été écrit de manière à promouvoir une API simple et concise, ainsi on obtient une déclaration simple et trés lisible des évènements:
+
+\begin{lstlisting}[language=javascript, caption={Exemple d'utilisation de tracker.js}]
+// Instanciation du tracker
+var tracker = new Tracker({distant: 'url'});
+
+// On ecoute les evenements "onclick" sur les elements de classe "my-element"
+tracker.on('.my-element').track('click');
+\end{lstlisting}
+
+\section{Overview}
 
 \pagestyle{fancy}
 
