@@ -85,6 +85,29 @@ tracker.on('.my-element').track('click');
 
 \section{Cas d'utilisation}
 
+\begin{frame}[fragile]
+  \frametitle{Dockerfile}
+
+  Exemple de \emph{Dockerfile} :
+
+  \begin{minted}[fontsize=\footnotesize]{bash}
+FROM postgres:9.3
+# scripts de peuplement des bases de données
+COPY ./db-creation /db-creation
+# script exécuté à la création de l'instance
+RUN mkdir -p /docker-entrypoint-initdb.d
+COPY ./initdb-setupdb.sh /docker-entrypoint-initdb.d/setupdb.sh
+  \end{minted}
+  
+  Lancement d'un instance basée sur cette image :
+  
+    \begin{minted}[fontsize=\footnotesize]{bash}
+docker build -t mydb .
+docker run mydb
+  \end{minted}
+  
+\end{frame}
+
 \section{Démonstration}
 
 \plain{Questions ?}
