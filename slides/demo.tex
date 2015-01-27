@@ -3,8 +3,9 @@
 \usetheme{m}
 
 \usepackage{booktabs}
-\usepackage[scale=2]{ccicons}
 \usepackage{minted}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 
 \usepgfplotslibrary{dateplot}
 
@@ -14,7 +15,10 @@
 \subtitle{Projet de fin d'études - VAP ASR}
 \date{28 Janvier 2015}
 \author{François Monniot \& Alexis Mousset}
-\institute{Télécom SudParis}
+\institute{\includegraphics[width=1cm]{logo.jpg}}
+\titlegraphic{
+   \includegraphics[width=2cm]{logo_TSP.jpg}
+}
 
 \begin{document}
 
@@ -42,7 +46,70 @@ tracker.on('.my-element').track('click');
 
 \section{Présentation}
 
+\begin{frame}[fragile]
+  \frametitle{Qu'est-ce qu'un conteneur ?}
+  \begin{center}
+  
+ 
+  \includegraphics[scale = 0.5]{dockervsvm.png}
+   \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Develop, Ship and Run Any Application, Anywhere}
+  Qu'apporte Docker ?
+  \pause
+  \begin{itemize}[<+- | alert@+>]
+  \item Workflow intégrant tout le cycle du vie de l'application
+  \item Rapide à créer, déployer et exécuter
+  \end{itemize}
+  \pause
+   Comment ?
+   \pause
+  
+\begin{itemize}[<+- | alert@+>]
+  \item Docker Engine (démon + client)
+    \begin{itemize}[<+- | alert@+>]
+      \item Conteneurs jetables
+      \item Images : layers, AUFS, versionning
+      \item Volumes
+      \item Liens
+    \end{itemize}
+  \item Docker Hub
+  \begin{itemize}[<+- | alert@+>]
+      \item Contient des images
+      \item Images officielles
+      \item Images publiques
+      \item Images privées
+    \end{itemize}
+
+\end{itemize}
+\end{frame}
+
 \section{Cas d'utilisation}
+
+\begin{frame}[fragile]
+  \frametitle{Dockerfile}
+
+  Exemple de \emph{Dockerfile} :
+
+  \begin{minted}[fontsize=\footnotesize]{bash}
+FROM postgres:9.3
+# scripts de peuplement des bases de données
+COPY ./db-creation /db-creation
+# script exécuté à la création de l'instance
+RUN mkdir -p /docker-entrypoint-initdb.d
+COPY ./initdb-setupdb.sh /docker-entrypoint-initdb.d/setupdb.sh
+  \end{minted}
+  
+  Lancement d'un instance basée sur cette image :
+  
+    \begin{minted}[fontsize=\footnotesize]{bash}
+docker build -t mydb .
+docker run mydb
+  \end{minted}
+  
+\end{frame}
 
 \section{Démonstration}
 
