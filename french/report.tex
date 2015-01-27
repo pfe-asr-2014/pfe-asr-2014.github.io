@@ -328,12 +328,100 @@ tracker.on('.my-element').track('click');
 
 \section{Overview}
 
+Overview est un site web fournissant à l'apprenant une interface graphique pour gérer les conteneurs d'apprentissage sur son ordinateur personelle.
+En effet, certain cours comme les bases de données relationnel n'ont pas de réel lien avec la ligne de commande UNIX. Dès lors, le pré-requis de savoir utiliser la ligne de commande pour pouvoir effectuer le TP de base de donnée est un frein pour un certain nombre d'apprenant. Overview permet de se passer de cette difficulté.
+
+Overview est composé de deux composants relativement indépendant: un serveur backend écrit en Python avec le framework flask et une interface frontend qui effectue des requêtes REST au serveur.
+
+\subsection{Frontend}
+
+D'un point de vue utilisateur il s'agit d'un simple site web qui propose, pour chaque cours disponible, quatres actions: installer, désinstaller, démarrer et arrêter. Ces actions sont conditionnelles: lorsqu'un conteneur est démarré on ne propose pas les actions «installer» et «démarrer» qui n'aurait pas de réel sens dans le contexte.
+
+Le code javascript à été écrit pour être facilement testable et modulable. Il se décompose en plusieurs module (ou fichier):
+
+\begin{itemize}
+  \item \textbf{log.js} Bibliothèque développé par Adam Schwartz est qui fourni plusieurs amélioration pour journaliser des informations (notament l'utilisation du markdown ou l'affichage de code).
+  \item \textbf{api.js} Un objet permettant d'abstraire les appels au serveur via une interface implémentant la «Désignation chainée». Ainsi une requête PATCH à notre serveur avec un objet quelconque s'effectue avec le code suivant:
+    \begin{lstlisting}[language=javascript,caption={Requête PATCH à l'api}]
+    var api = new Api('http://mon-serveur.com/api/v1/');
+    api.patch('services/'+serviceId).with(quelconque).now(function(status, data){});
+    \end{lstlisting}
+    L'objet «quelconque» ici passé en paramètre sera transformé en JSON et passé dans le corps de la requête. La fonction passé à «now» sera executé lors de la reception de la réponse du serveur avec le statut HTTP et les données de la réponse. Il est a noté qu'il n'a pas été jugé utile de retourner les en-têtes HTTP dans la fonction de rappel. La connexion avec le serveur est réalisé avec l'objet XMLHttpRequest qui fait partie des spécifications javascript et est disponible sur tous les navigateurs «modernes».
+  \item \textbf{router.js} Cet objet permet d'écouter les changements d'adresse du navigateur et de réagir en consèquence. Plus précisemment, le frontend utilise les «hash» de l'URL afin de savoir les actions qu'il faut exécuter. Les hash sont les caractères situé après le dièse de l'URL, par exemple dans l'URL http://monsite.com/\#pub, «pub» est le hash.
+  Le routeur permet d'enregistrer des actions à réaliser lorsque le hash correspond à un schéma prédéfinni. Ce schéma est composé d'une action (une chaine de caractère choisi par le développeur qui ne peut comporter le signe «:» (utilisé comme délimiteur) et qui respecte les standards définissant une URI; la deuxième partie du schéma sera l'identifiant du cours (appelé «service» dans le code et la documentation).
+  Un exemple étant plus parlant, voici le code qui permet d'afficher l'identifiant d'un cours lorsque le hash est «show:my-cours-id»:
+    \begin{lstlisting}[language=javascript,caption={Affichage identifiant avec le routeur}]
+    var router = new Router();
+    router.register('show', function(serviceId){
+      alert(serviceId);
+    });
+    \end{lstlisting}
+  \item \textbf{drawer.js} qui permet d'ouvrir et de fermer le menu gauche pour gagner de la place et \textbf{table.js} qui re-organise le tableau sur mobile afin de garder la lisibilité.
+  \item \textbf{main.js} Ce fichier n'est pas un module en soit mais déclare la logique du site web. C'est la glue qui relie tout les composants vue précédemment. On y déclare les états possible, les opérations à faire (routing) ainsi que certaines amélioration lié au design (barre de progression, action disponible et affiché à l'apprenant).
+\end{itemize}
+
+De plus, les modules \textbf{Router} et \textbf{Api} dispose de tests unitaire réalisé avec le framework \textbf{Jasmine.js}.
+
+\subsection{Backend}
+
+Le backend est développé en Python avec le framework Flask. Il se compose de quatres modules complèmentaires (représentation UML figure~\ref{uml-overview-module}):
+
+\begin{itemize}
+  \item \textbf{services} est une classe regroupant la gestion des services (les cours sont des services apparant à l'apprenant)
+  \item \textbf{api} contient toutes les déclarations de route concernant l'api du serveur. C'est une passerelle entre l'utilisateur et la classe Services.
+  \item \textbf{frontend} est le pendant de api pour servir les pages web. Il permet de servir la page web de Overview.
+  \item \textbf{helpers} Contient des fonctions utilisées dans les templates web pour simplifier le code.
+  \item \textbf{overview} Il s'agit du module python qui compose et crée l'application flask.
+\end{itemize}
+
+\begin{figure}[h]
+   \caption{\label{uml-overview-module} Représentation UML du serveur Overview}
+   \centering
+   \includegraphics[scale=0.8, keepaspectratio=true]{packages_overview.png}
+\end{figure}
+
+Les liens bidirectionnel sont expliqué par le fait que le module overview importe frontend et api après avoir créé l'application flask et que ces deux modules utilise cette application flask pour la configurer. Cette organisation à été choisi pour séparer les roles de chacun (separation of concerns) et faciliter les tests. L'application est d'ailleurs entièrement couvert par des tests unitaires réalisé avec la bibliothèque standard de python et du collecteur noses.
+
+L'API d'overview est sous la forme d'une API REST. Elle propose trois \textit{endpoint}:
+\begin{itemize}
+  \item \textbf{GET /api/v1/docker} permet d'obtenir l'état des conteneurs docker liés aux moocs TSP (on ne peut connaitre l'état des conteneurs n'ayant pas de rapport avec les moocs tsp).
+  \item \textbf{GET /api/v1/services} permet d'obtenir l'état des services (nom, identifiant, état).
+  \item \textbf{PATCH /api/v1/services/<service\_id>} permet de changer l'état d'un service.
+\end{itemize}
+
+Overview est basé sur des services. Un service c'est un ensemble de conteneur associé à une certaine configuration. Par exemple le cours de base de donnée est représenté par la configuration suivante:
+\begin{lstlisting}[caption={Configuration du service mooc-db}]
+- id: tsp-mooc-db
+  completeName: Relational Database
+  port: 8080
+  stack:
+    - containerName: tsp-moocdb-postgres
+      image: fmonniot/tsp-moocdb-postgres:latest
+    - containerName: tsp-moocdb-web
+      image: fmonniot/tsp-moocdb-web:latest
+      ports:
+        - "8080:80"
+      links:
+        - tsp-moocdb-postgres
+\end{lstlisting}
+
+Cette configuration spécifie un identifiant (id), un nom lisible pour l'apprenant (completeName) ainsi qu'un port à exposer pour l'interface web. On remarque ensuite une section «stack»: il s'agit de la configuration des conteneurs docker. Chaque entrée correspond à un conteneur. Dans notre exemple nous avons un premier conteneur contenant la base de donnée postgreSQL et un second contenant l'interface graphique, lié à la base de donnée via un lien docker et exposant le port 8080 à l'utilisateur.
+
+Afin de pouvoir gérer ces services, on introduit la notion d'état desdits services: ils peuvent être dans six états différents comme décrit par la figure~\ref{overview-states}. Les états «NOT\_INSTALLED», «STOPPED» et «RUNNING» ne change pas sans actions de l'utilisateur. Au contraire les états «INSTALLING», «STOPPING» et «UNINSTALLING» sont temporaires et changeront dès que leur action sera terminée.
+
+
+\begin{figure}[h]
+   \caption{\label{overview-states} Cycle de vie d'un service}
+   \centering
+   \includegraphics[width=\textwidth, keepaspectratio=true]{overview-states.png}
+\end{figure}
+
 \section{Agent}
+
+\includegraphics[scale=0.45]{docker}
 
 La récupération des logs s'effectue au travers de l'API python Docker\cite{docker-py}.
 L'agent récupère les logs de tous les conteneurs, les lit et les envoie au broker local.
-
-\includegraphics[scale=0.45]{docker}
 
 bug streaming logs
 
