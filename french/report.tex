@@ -69,21 +69,10 @@
 \usepackage{lastpage}
 \usepackage{fancyhdr}
 
-
 \cfoot{\thepage\ of \pageref{LastPage}}
 
-% \fancyhead{} % clear all header fields
-% \fancyhead[C]{\scriptsize Notre beau titre}
-% \fancyfoot{}
-% \fancyfoot[C]{\thepage/\pageref{LastPage}} % clear all footer fields
-% %\fancyfoot[LE,RO]{}
-% %\fancyfoot[RE,LO]{\scriptsize Webs'INT - Télécom SudParis}
-% \fancyfoot[CO,RE]{}
-% %\renewcommand{\headrulewidth}{0pt}
-% %\renewcommand{\footrulewidth}{0pt}
-
-\title{Environnements de TP pour MOOC}
-\author{François Monniot \& Alexis Mousset}
+\title{Environnements de TP pour MOOC avec Docker}
+\author{François Monniot \& Alexis Mousset\\Encadrants : Olivier Berger \& Christian Bac}
 
 % PDF metadata
 \hypersetup{pdfinfo={
@@ -98,7 +87,6 @@
 
 \maketitle
 \tableofcontents
-
 
 \thispagestyle{fancy}
 \chapter{Introduction}
@@ -427,11 +415,13 @@ Nous avons rencontré un bug\cite{dockerpybug} dans le client python Docker, emp
 
 L'agent parcourt les logs de toutes les machines, sauf celles dont les images commencent par \texttt{tsp-mooc}, qui correspondent à l'agent et au broker, dont nous ne voulons a priori pas transmettre les logs. Ensuite, l'agent filtre les logs, pour l'instant en recherchant des lignes contenant certaines chaînes de caractères.
 
-La configuration de la connexion à moodle s'effectue dans la fichier de configuration login.yml situé dans le dossier tsp-mooc-agent. Il serait plus simple de l'intégrer à l'interface Web pour simplifier la configuration. De plus dans notre démonstration, les identifiants circulent en clair, il faudrait utiliser une connexion chiffrée pour sécuriser l'envoi des identifiants, ou récupérer un tocker côté client. Mais en cas d'expiration du toke, les logs ne seraient plus utilisables.
+La configuration de la connexion à moodle s'effectue dans la fichier de configuration login.yml situé dans le dossier tsp-mooc-agent. Il serait plus simple de l'intégrer à l'interface Web pour simplifier la configuration. De plus dans notre démonstration, les identifiants circulent en clair, il faudrait utiliser une connexion chiffrée pour sécuriser l'envoi des identifiants, ou récupérer un tocker côté client. Mais en cas d'expiration du token, les logs ne seraient plus utilisables.
 
-Pour la transmission des logs, plutôt que d'effectuer un accès direct à l'interface Web de moodle, qui pourrait ne pas être accessible de l'apprenant au moment ou il travaille, ou de gérer nous même les message, nous avons utilisé un middleware de messaging. Dans un objectif de légèreté, nous nous sommes tournés vers MQTT, utilisé principalement en M2M, sur l'Internet des objet.
+Pour la transmission des logs, plutôt que d'effectuer un accès direct à l'interface Web de moodle, qui pourrait ne pas être accessible de l'apprenant au moment ou il travaille, ou de gérer nous même les message, nous avons utilisé un middleware de messaging. Dans un objectif de légèreté, nous nous sommes tournés vers MQTT, utilisé principalement en M2M, en particulier sur l'Internet des objet. Il est limité en fonctionnalités, mais elles sont suffisantes pour nos besoins
 
-Nous utilisons le broker Mosquitto\cite{mosquitto}, packagé dans Debian. Nous avons rencontré un bug connu\cite{bug-mosquitto}, qui empêchait le client python (paho) de communiquer avec mosquitto. En effet, le client essaie par défaut d'utiliser le protocole MQTT 3.1.1, et mosquitto ne rejetant pas correctement la connexion, le client ne réessaie par avec MQTT 3.1 (seul supporté par la version de mosquitto présente dans les dépôts Debian 7).
+Nous utilisons le broker Mosquitto\cite{mosquitto}, packagé dans Debian. Nous avons rencontré un bug connu\cite{bug-mosquitto}, qui empêchait le client python (paho) de communiquer avec mosquitto. En effet, le client essaie par défaut d'utiliser le protocole MQTT 3.1.1, et mosquitto ne rejetant pas correctement la connexion, le client ne réessaie par avec MQTT 3.1 (seul supporté par la version de mosquitto présente dans les dépôts Debian 7). Entre le broker côté apprenant et le broker côté serveur est configuré un bridge, qui transfère tous les messages d'un même topic de l'un à l'autre.
+
+Du côté serveur, un conteneur (tsp-mooc-subscriber) est chargé de souscrire au topic contenant les événements, et de les transmettre à moodle en HTTP.
 
 \chapter{Utilisation}
 
