@@ -93,7 +93,7 @@
 }}
 
 \addbibresource{report.bib}
-
+\pagestyle{fancy}
 \begin{document}
 
 \maketitle
@@ -102,9 +102,9 @@
 \begin{abstract}
 
 \end{abstract}
-\pagestyle{fancy}
+\thispagestyle{fancy}
 \chapter{Introduction}
-\pagestyle{fancy}
+\thispagestyle{fancy}
 \section{MOOC}
 
 \subsection{Contexte des MOOC à TSP et en général}
@@ -220,20 +220,20 @@ Le tableau \ref{compat} résume la compatibilité des environnements basés sur 
 \end{figure}
 
 \chapter{Implémentation}
-
-Le projet est open source et a été développé publiquement. Ainsi tout les codes sources sont disponible sur GitHub et sont regroupé dans l'organisation «pfe-asr-2014». On peut y retrouver les codes sources bien entendue, mais également documentation et tests. Enfin le projet dispose de son propre site web à l'adresse pfe-asr-2014.github.io.
+\thispagestyle{fancy}
+Le projet est open source et a été développé publiquement. Ainsi tout les codes sources sont disponible sur GitHub et sont regroupé dans l'organisation «pfe-asr-2014». On peut y retrouver les codes sources bien entendu, mais également documentation et tests. Enfin le projet dispose de son propre site web à l'adresse \url{http://pfe-asr-2014.github.io}.
 
 \section{Architecture}
 
-La platforme que nous proposons est basé sur des conteneurs Docker. Ainsi chaque composant peut, dans l'absolu, être utilisé de manière
-completement indépendante les uns des autres. La figure~\ref{architecture} représente l'architecture telle qu'envisagée lors de ce projet.
+La plateforme que nous proposons est basée sur des conteneurs Docker. Ainsi chaque composant peut, dans l'absolu, être utilisé de manière
+complètement indépendante les uns des autres. La figure\ref{architecture} représente l'architecture telle qu'envisagée lors de ce projet.
 
 \begin{figure}[h]
    \caption{\label{architecture} Architecture de la plateforme}
    \includegraphics[width=\textwidth, keepaspectratio=true]{architecture.png}
 \end{figure}
 
-Cette architecture se décompose en deux parties principales: la première est gérer par l'école et peut se déployer sur des serveurs dédiés ou sur un cloud; la deuxième partie est basé sur docker et peut donc être déployé dans n'importe quel environnement docker (c'est d'ailleurs une des grandes force de docker), dans notre cas il s'agit couramment de l'ordinateur de l'apprenant mais on peut envisager la possibilité d'héberger ces conteneurs sur un cloud gérer par l'école et directement proposer les accés aux apprenants.
+Cette architecture se décompose en deux parties principales: la première est gérer par l'école et peut se déployer sur des serveurs dédiés ou sur un cloud; la deuxième partie est basée sur docker et peut donc être déployée dans n'importe quel environnement docker (c'est d'ailleurs une des grandes forces de docker), dans notre cas il s'agit couramment de l'ordinateur de l'apprenant mais on peut envisager la possibilité d'héberger ces conteneurs sur un cloud géré par l'école et directement proposer les accès aux apprenants.
 
 La communication entre les groupes est assuré via l'utilisation du protocole MQ Telemetry Transport (MQTT). Il s'agit d'un protocole de communication prévu pour ne pas consommer beaucoup de ressources (il est par exemple utilisé dans l'embarqué, l'internet des objets mais aussi la communication avec des satellites) et qui est résilient. Il offre un minimum de fonctionnalité (publish/subscribe) ce qui nous suffit, nous l'avons choisi car il permet d'avoir une faible emprunte sur des machines de faible puissance que certains des apprenants peuvent utiliser.
 
@@ -243,29 +243,29 @@ Le serveur fonctionne avec trois briques logiciels différents:
 
 \begin{itemize}
   \item Un plugin moodle qui permet l'enregistrement des traces des apprenants dans le système moodle afin de permettre aux professeurs de créer des rapports.
-  \item Une passerelle entre le serveur MQTT et moodle qui transforme les données obtenu via MQTT dans un format reconnu par moodle.
-  \item Un serveur (broker) MQTT sur lequel les brokers distant vont se connecter pour transmettre les traces qu'ils auront genérer.
+  \item Une passerelle entre le serveur MQTT et moodle qui transforme les données obtenues via MQTT dans un format reconnu par moodle.
+  \item Un serveur (broker) MQTT sur lequel les brokers distants vont se connecter pour transmettre les traces qu'ils auront généré.
 \end{itemize}
 
-Ces trois briques logiciels peuvent être déployer sur différents serveurs si l'on a besoin de répartir la charge. Nous recommandons dans ce cas de grouper la passerelle et le broker MQTT sur une même machine qu'il suffit de multiplier pour passer à l'échelle.
+Ces trois briques logicielles peuvent être déployées sur différents serveurs si l'on a besoin de répartir la charge. Nous recommandons dans ce cas de grouper la passerelle et le broker MQTT sur une même machine qu'il suffit de multiplier pour passer à l'échelle.
 
 \subsection{Apprenant}
 
-Le coté apprenant est composé de deux conteneurs essentiels si déployer sur un cloud:
+Le côté apprenant est composé de deux conteneurs essentiels si déployés sur un cloud :
 
 \begin{itemize}
   \item Le broker MQTT qui permet de transmettre les traces des apprenants au serveur distant.
-  \item Et l'agent qui collecte les traces des apprenants émis par les conteneurs de cours, les mets en forme et les retransmets au broker MQTT.
+  \item Et l'agent qui collecte les traces des apprenants émis par les conteneurs de cours, les met en forme et les retransmets au broker MQTT.
 \end{itemize}
 
-Si l'environnement est disponible sur la machine de l'apprenant alors le conteneur Overview permet de fournir une interface graphique qui permet gérer les conteneurs d'apprentissages de manières extremement simple.
+Si l'environnement est disponible sur la machine de l'apprenant alors le conteneur Overview permet de fournir une interface graphique qui permet gérer les conteneurs d'apprentissages de manières extrêmement simple.
 
-Enfin des conteneurs d'apprentissages composent les environnement des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter (de façon anonyme ou non) des informations sur leurs utilisation, l'avancement de l'apprenant voir des résultats d'examen.
+Enfin des conteneurs d'apprentissage composent les environnements des travaux pratiques des apprenants, ils fournissent les éléments essentiels à la réalisation des travaux pratiques et permettent de remonter, de façon anonyme ou non, des informations sur leur utilisation, l'avancement de l'apprenant, voire des résultats d'examen.
 
 \section{Moodle}
 
 Afin de pouvoir insérer les informations relatives aux travaux pratiques dans le système moodle il nous faut une porte d'entrée dans le-dit système. Il n'existe malheureusement pas de façon simple de fournir ces informations à moodle (c'est-à-dire sans développer un plugin spécifique).
-C'est donc ce que nous avons fait. Le plugin développer est très simple dans son utilisation: après installation du plugin et identification de l'utilisateur, il est possible via une simple requête HTTP de fournir à moodle un «évènement». La figure~\ref{seq-submit-event} ci-après représente la manière de soumettre un évènement.
+C'est donc ce que nous avons fait. Le plugin développé est très simple dans son utilisation: après installation du plugin et identification de l'utilisateur, il est possible via une simple requête HTTP de fournir à moodle un «évènement». La figure~\ref{seq-submit-event} ci-après représente la manière de soumettre un évènement.
 
 \begin{figure}[h]
   \begin{center}
@@ -283,7 +283,7 @@ GET http://localhost:8080/login/token.php?
   password=
 \end{lstlisting}
 
-Il faut que les champs «username» et «password» soit complété avec le nom d'utilisateur et le mot de passe du compte moodle de l'apprenant.
+Il faut que les champs «username» et «password» soit complétés avec le nom d'utilisateur et le mot de passe du compte moodle de l'apprenant.
 Moodle renvoie alors le token avec la réponse au format json suivante:
 
 \begin{lstlisting}[language=json, caption={Retourne le token}]
@@ -303,18 +303,18 @@ POST http://localhost:8080/webservice/rest/server.php?
     datetime="2014-12-11T16:31:12.436+01:00"
 \end{lstlisting}
 
-Les quatres dernier champs sont les plus importants: la catégorie, l'action, le label et le temps permettent de spécifier un évènement. Avec une combinaison de ces quatres valeurs, on peut décrire tous les évènements produits par les apprenants. Par exemple dans la requête précédente nous avons soumis un évènement concernant le début du cours concernant les bases de données relationnels, de plus l'apprenant à commencer ce cours le 11 décembre en fin d'après-midi (16h30).
-Le format de description est suffisament générique pour qu'il puisse décrire un évènement métier (début d'un cours) ou un évènement technique (soumission d'une requête SQL) tout en gardant un format unique dans les différents cas. Si le format d'évènement choisi avait été moins générique, il aurait falu en maintenir plusieurs suivant le type d'information à transmettre ce qui aurait augmenter la complexité du système sans gain significatif.
+Les quatre dernier champs sont les plus importants: la catégorie, l'action, le label et le temps permettent de spécifier un évènement. Avec une combinaison de ces quatre valeurs, on peut décrire tous les évènements produits par les apprenants. Par exemple dans la requête précédente nous avons soumis un évènement concernant le début du cours concernant les bases de données relationnels, de plus l'apprenant à commencé ce cours le 11 décembre en fin d'après-midi (16h30).
+Le format de description est suffisamment générique pour qu'il puisse décrire un évènement métier (début d'un cours) ou un évènement technique (soumission d'une requête SQL) tout en gardant un format unique dans les différents cas. Si le format d'évènement choisi avait été moins générique, il aurait fallu en maintenir plusieurs suivant le type d'information à transmettre ce qui aurait augmenter la complexité du système sans gain significatif.
 
 \section{tracker.js}
 
-L'interet de la nouvelle plateforme de MOOC c'est d'etre capable de fournir aux enseignants des retours sur ce qu'on fait les apprenants. Ainsi des questions comme «Est-ce que le TP a la bonne difficulté ?» ou «Pourquoi est-ce que la majorité des apprenants se trompent à la question 5?» peuvent trouver une réponse dans le comportement des apprenants (par exemple, la majorité des réponses sont les mêmes, la question posée est-peut être mal formulé). Aussi faut-il connaitre les actions des apprenants lorqu'ils réalisent le TP.
-C'est pour répondre à cette problèmatique qu'est née tracker.js.
+L'intérêt de la nouvelle plateforme de MOOC c'est d'être capable de fournir aux enseignants des retours sur ce qu'on fait les apprenants. Ainsi des questions comme «Est-ce que le TP a la bonne difficulté ?» ou «Pourquoi est-ce que la majorité des apprenants se trompent à la question 5?» peuvent trouver une réponse dans le comportement des apprenants (par exemple, la majorité des réponses sont les mêmes, la question posée est-peut être mal formulée). Aussi faut-il connaître les actions des apprenants lorsqu'ils réalisent le TP.
+C'est pour répondre à cette problématique qu'est né tracker.js.
 
-Tracker.js est une simple bibliothèque javascript à intégré dans une page web et qui permet de déclarer un certain nombre d'évènement à surveiller.
-De maniere pratique cela permet d'enregistrer les cliques de souris, les frappes clavier ou un évènement personalisé et d'envoyer les informations à l'agent pour qu'il relais les informations à moodle.
+Tracker.js est une simple bibliothèque javascript à intégrer dans une page web et qui permet de déclarer un certain nombre d'évènement à surveiller.
+De manière pratique cela permet d'enregistrer les cliques de souris, les frappes clavier ou un évènement personnalisé et d'envoyer les informations à l'agent pour qu'il relaie les informations à moodle.
 
-Le tracker à été écrit de manière à promouvoir une API simple et concise, ainsi on obtient une déclaration simple et trés lisible des évènements:
+Le tracker à été écrit de manière à promouvoir une API simple et concise, ainsi on obtient une déclaration simple et très lisible des évènements:
 
 \begin{lstlisting}[language=javascript, caption={Exemple d'utilisation de tracker.js}]
 // Instanciation du tracker
@@ -326,26 +326,26 @@ tracker.on('.my-element').track('click');
 
 \section{Overview}
 
-Overview est un site web fournissant à l'apprenant une interface graphique pour gérer les conteneurs d'apprentissage sur son ordinateur personelle.
-En effet, certain cours comme les bases de données relationnel n'ont pas de réel lien avec la ligne de commande UNIX. Dès lors, le pré-requis de savoir utiliser la ligne de commande pour pouvoir effectuer le TP de base de donnée est un frein pour un certain nombre d'apprenant. Overview permet de se passer de cette difficulté.
+Overview est un site web fournissant à l'apprenant une interface graphique pour gérer les conteneurs d'apprentissage sur son ordinateur personnelle.
+En effet, certains cours comme les bases de données relationnelles n'ont pas de réel lien avec la ligne de commande UNIX. Dès lors, le pré-requis de savoir utiliser la ligne de commande pour pouvoir effectuer le TP de base de donnée est un frein pour un certain nombre d'apprenant. Overview permet de se passer de cette difficulté.
 
-Overview est composé de deux composants relativement indépendant: un serveur backend écrit en Python avec le framework flask et une interface frontend qui effectue des requêtes REST au serveur.
+Overview est composé de deux composants relativement indépendants : un serveur backend écrit en Python avec le framework flask et une interface frontend qui effectue des requêtes REST au serveur.
 
 \subsection{Frontend}
 
-D'un point de vue utilisateur il s'agit d'un simple site web qui propose, pour chaque cours disponible, quatres actions: installer, désinstaller, démarrer et arrêter. Ces actions sont conditionnelles: lorsqu'un conteneur est démarré on ne propose pas les actions «installer» et «démarrer» qui n'aurait pas de réel sens dans le contexte.
+D'un point de vue utilisateur il s'agit d'un simple site web qui propose, pour chaque cours disponible, quatre actions : installer, désinstaller, démarrer et arrêter. Ces actions sont conditionnelles: lorsqu'un conteneur est démarré on ne propose pas les actions «installer» et «démarrer» qui n'aurait pas de réel sens dans le contexte.
 
 Le code javascript à été écrit pour être facilement testable et modulable. Il se décompose en plusieurs module (ou fichier):
 
 \begin{itemize}
-  \item \textbf{log.js} Bibliothèque développé par Adam Schwartz est qui fourni plusieurs amélioration pour journaliser des informations (notament l'utilisation du markdown ou l'affichage de code).
+  \item \textbf{log.js} Bibliothèque développé par Adam Schwartz est qui fourni plusieurs amélioration pour journaliser des informations (notamment l'utilisation du markdown ou l'affichage de code).
   \item \textbf{api.js} Un objet permettant d'abstraire les appels au serveur via une interface implémentant la «Désignation chainée». Ainsi une requête PATCH à notre serveur avec un objet quelconque s'effectue avec le code suivant:
     \begin{lstlisting}[language=javascript,caption={Requête PATCH à l'api}]
     var api = new Api('http://mon-serveur.com/api/v1/');
     api.patch('services/'+serviceId).with(quelconque).now(function(status, data){});
     \end{lstlisting}
     L'objet «quelconque» ici passé en paramètre sera transformé en JSON et passé dans le corps de la requête. La fonction passé à «now» sera executé lors de la reception de la réponse du serveur avec le statut HTTP et les données de la réponse. Il est a noté qu'il n'a pas été jugé utile de retourner les en-têtes HTTP dans la fonction de rappel. La connexion avec le serveur est réalisé avec l'objet XMLHttpRequest qui fait partie des spécifications javascript et est disponible sur tous les navigateurs «modernes».
-  \item \textbf{router.js} Cet objet permet d'écouter les changements d'adresse du navigateur et de réagir en consèquence. Plus précisemment, le frontend utilise les «hash» de l'URL afin de savoir les actions qu'il faut exécuter. Les hash sont les caractères situé après le dièse de l'URL, par exemple dans l'URL http://monsite.com/\#pub, «pub» est le hash.
+  \item \textbf{router.js} Cet objet permet d'écouter les changements d'adresse du navigateur et de réagir en consèquence. Plus précisément, le frontend utilise les «hash» de l'URL afin de savoir les actions qu'il faut exécuter. Les hash sont les caractères situé après le dièse de l'URL, par exemple dans l'URL http://monsite.com/\#pub, «pub» est le hash.
   Le routeur permet d'enregistrer des actions à réaliser lorsque le hash correspond à un schéma prédéfinni. Ce schéma est composé d'une action (une chaine de caractère choisi par le développeur qui ne peut comporter le signe «:» (utilisé comme délimiteur) et qui respecte les standards définissant une URI; la deuxième partie du schéma sera l'identifiant du cours (appelé «service» dans le code et la documentation).
   Un exemple étant plus parlant, voici le code qui permet d'afficher l'identifiant d'un cours lorsque le hash est «show:my-cours-id»:
     \begin{lstlisting}[language=javascript,caption={Affichage identifiant avec le routeur}]
@@ -421,7 +421,24 @@ Afin de pouvoir gérer ces services, on introduit la notion d'état desdits serv
 La récupération des logs s'effectue au travers de l'API python Docker\cite{docker-py}.
 L'agent récupère les logs de tous les conteneurs, les lit et les envoie au broker local.
 
-bug streaming logs
+Pour pouvoir connecter un conteneur au démon docker, nous avons partagé le socket avec le conteneur :
+
+\begin{lstlisting}[language=Bash,caption={Extrait de la configuration fig}]
+volumes:
+- /var/run/docker.sock:/var/run/docker.sock
+\end{lstlisting}
+
+À noter que nette manipulation échoue sous Fedora, à cause de la protection du socket par SELinux.
+
+Nous avons rencontré un bug\cite{dockerpybug} dans le client python Docker, empêchant l'exploitation du streaming de logs. Nous avons donc du utiliser les fichiers entiers à chaque lecture des logs, le correctif n'ayant pas été accepté. Pour cela nous stockons l dernier numéro de ligne lu, et nous repartons de celui-ci ensuite. Cette solution est loin d'être optimale, mais permet de rendre l'environnement exploitable.
+
+L'agent parcourt les logs de toutes les machines, sauf celles dont les images commencent par \texttt{tsp-mooc}, qui correspondent à l'agent et au broker, dont nous ne voulons a priori pas transmettre les logs. Ensuite, l'agent filtre les logs, pour l'instant en recherchant des lignes contenant certaines chaînes de caractères.
+
+La configuration de la connexion à moodle s'effectue dans la fichier de configuration login.yml situé dans le dossier tsp-mooc-agent. Il serait plus simple de l'intégrer à l'interface Web pour simplifier la configuration. De plus dans notre démonstration, les identifiants circulent en clair, il faudrait utiliser une connexion chiffrée pour sécuriser l'envoi des identifiants, ou récupérer un tocker côté client. Mais en cas d'expiration du toke, les logs ne seraient plus utilisables.
+
+Pour la transmission des logs, plutôt que d'effectuer un accès direct à l'interface Web de moodle, qui pourrait ne pas être accessible de l'apprenant au moment ou il travaille, ou de gérer nous même les message, nous avons utilisé un middleware de messaging. Dans un objectif de légèreté, nous nous sommes tournés vers MQTT, utilisé principalement en M2M, sur l'Internet des objet.
+
+Nous utilisons le broker Mosquitto\cite{mosquitto}, packagé dans Debian. Nous avons rencontré un bug connu\cite{bug-mosquitto}, qui empêchait le client python (paho) de communiquer avec mosquitto. En effet, le client essaie par défaut d'utiliser le protocole MQTT 3.1.1, et mosquitto ne rejetant pas correctement la connexion, le client ne réessaie par avec MQTT 3.1 (seul supporté par la version de mosquitto présente dans les dépôts Debian 7).
 
 scéma de nommage
 
@@ -429,11 +446,9 @@ scéma de nommage
 
 faire un filtre dans l'agent
 
-\pagestyle{fancy}
-
 \chapter{Utilisation}
 
-\pagestyle{fancy}
+\thispagestyle{fancy}
 
 Ce chapitre décrit l'utilisation de notre plateforme de deux points de vue: celui de l'enseignant qui veut rendre accessible son cours depuis la plateforme et du point de vue de l'apprenant qui veut y acceder.
 Cette description sera basé sur le cas d'utilisation du MOOC de base de donnée afin d'en faciliter la compréhension.
@@ -448,7 +463,7 @@ Commencons par préciser l'infrastructure avec laquelle nous allons travailler (
    \includegraphics[width=\textwidth, keepaspectratio=true]{infrastructure-creation.png}
 \end{figure}
 
-La première chose que l'on remarque dans cette architecture c'est la place essentiel que joue GitHub (et par extension le gestionnaire de version git). Nous avons fais ce choix car il permet une construction automatique des images dès qu'une modification à lieu sur le dépôt distant (Il est possible de se passer de git, il faut pour cela construire localement l'image puis la pousser manuellement sur un registry docker, docker hub ici). Ce choix nous a parrus moins interessant pour plusieurs raisons: la première c'est qu'en enforcant l'utilisation d'un dépôt git publique, le code de l'image est forcement publique ce qui, dans le cadre d'un projet libre, est bénéfique; la seconde raison est sécuritaire, si il n'y a pas de dépôt central alors il faut que la personne envoyant l'image en ligne est les accréditations (nom utilisateurs, mot de passe) or nous ne voulons pas que tous nos contributeurs est accès à nos identifiants. Plus encore, avec un dépôt dédié nous pouvons gérer de manière plus fine les droits (qui peut modifier quoi) tout en gardant un compte unique pour publier les images.
+La première chose que l'on remarque dans cette architecture c'est la place essentiel que joue GitHub (et par extension le gestionnaire de version git). Nous avons fais ce choix car il permet une construction automatique des images dès qu'une modification à lieu sur le dépôt distant (Il est possible de se passer de git, il faut pour cela construire localement l'image puis la pousser manuellement sur un registry docker, docker hub ici). Ce choix nous a paru moins intéressant pour plusieurs raisons: la première c'est qu'en enforcant l'utilisation d'un dépôt git publique, le code de l'image est forcement publique ce qui, dans le cadre d'un projet libre, est bénéfique; la seconde raison est sécuritaire, si il n'y a pas de dépôt central alors il faut que la personne envoyant l'image en ligne est les accréditations (nom utilisateurs, mot de passe) or nous ne voulons pas que tous nos contributeurs est accès à nos identifiants. Plus encore, avec un dépôt dédié nous pouvons gérer de manière plus fine les droits (qui peut modifier quoi) tout en gardant un compte unique pour publier les images.
 
 Une fois le dépôt git envoyé en ligne (nous verrons le contenu de ce dépôt dans la section suivante), la construction de l'image débute automatiquement. Une fois l'image construite, elle est immédiatement disponible pour tout les apprenants !
 
@@ -533,11 +548,13 @@ docker run -it -p 5000:5000 --name tsp-mooc-overview \
            fmonniot/tsp-mooc-overview
 \end{lstlisting}
 
-L'utilisateur peut alors aller à l'adresse indiquée lors du démarrage du conteneur afin d'avoir accès à la page de gestion des environnement de TP.
-Une fois sur la page web, il est très simple d'interagire en choisissant l'action a effectuer par cours (lancer le cours, l'installer, le désinstaller, etc…).
-
+L'utilisateur peut alors aller à l'adresse indiquée lors du démarrage du conteneur afin d'avoir accès à la page de gestion des environnements de TP.
+Une fois sur la page web, il est très simple d'interagir en choisissant l'action a effectuer par cours (lancer le cours, l'installer, le désinstaller, etc…).
+\thispagestyle{fancy}
 \printbibliography
+\thispagestyle{fancy}
 \lstlistoflistings
+\thispagestyle{fancy}
 \listoffigures
-
+\thispagestyle{fancy}
 \end{document}

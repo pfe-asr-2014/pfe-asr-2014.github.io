@@ -27,21 +27,17 @@
 \section{Introduction}
 
 \begin{frame}[fragile]
-  \frametitle{Notre projet}
-
-  \begin{description}
-    \item[PowerPoint] Meeh.
-    \item[Beamer] Yeeeha.
-  \end{description}
-\end{frame}
-
-\section{Présentation}
-
-
-\begin{frame}[fragile]
   \frametitle{MOOC}
 
-  
+  Un MOOC est un \emph{Massive Open Online Course} :
+  \pause
+  \begin{itemize}[<+- | alert@+>]
+  \item Adapté à de nombreux utilisateurs
+  \item Ouvert à tous
+  \item Communication par Internet
+  \item Participants éloignés géographiquement
+  \end{itemize}
+
 \end{frame}
 
 \begin{frame}[fragile]
@@ -60,10 +56,12 @@
 
 \end{frame}
 
+\section{Docker}
+
 \begin{frame}[fragile]
   \frametitle{Qu'est-ce qu'un conteneur ?}
   \begin{center}
-  
+  % lxc commence en 2008
   \includegraphics[scale = 0.5]{dockervsvm.png}
    \end{center}
 \end{frame}
@@ -98,7 +96,6 @@
 
 \end{itemize}
 \end{frame}
-
 
 \section{Implémentation}
 
@@ -150,9 +147,20 @@
 
 \begin{frame}[fragile]
   \frametitle{Reporting}
-  \begin{center}
-
+  Architecture :
+   \begin{center}
+  \includegraphics[scale = 0.3]{reporting.png}
    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Reporting}
+  Architecture :
+   \begin{itemize}[<+- | alert@+>]
+      \item Bibliothèque Docker en Python
+      \item Partage du socket de contrôle du démon
+      \item Filtrage des logs intéressants
+    \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -242,11 +250,33 @@ COPY ./initdb-setupdb.sh /docker-entrypoint-initdb.d/setupdb.sh
   
   Lancement d'une instance basée sur cette image :
   
-    \begin{minted}[fontsize=\footnotesize]{bash}
+  \begin{minted}[fontsize=\footnotesize]{bash}
 docker build -t mydb .
 docker run mydb
   \end{minted}
+\end{frame}
+
+  \begin{frame}[fragile]
+  \frametitle{Fig}
+
+  Exemple de configuration \emph{fig.yml} :
+
+  \begin{minted}[fontsize=\footnotesize]{bash}
+web:
+  build: web
+  links:
+   - db
+  ports:
+   - "8000:8000"
+db:
+  image: postgres
+  \end{minted}
   
+  Création et lancement des conteneurs :
+  
+    \begin{minted}[fontsize=\footnotesize]{bash}
+fig up
+  \end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -259,7 +289,6 @@ docker run mydb
       \item Exécution de scripts d'installation : téléchargement des images, lancement des conteneurs
       \item Lancement d'une éventuelle interface web dans le navigateur, en local
     \end{itemize}
-  
 \end{frame}
 
 
